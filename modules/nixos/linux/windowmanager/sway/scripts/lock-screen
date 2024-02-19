@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# handle being called from systemd service
+if [ -z "$XDG_RUNTIME_DIR" ] && [ -z "$SWAYSOCK"]; then
+	uid=$(id -u $USER)
+	export XDG_RUNTIME_DIR="/run/user/"$uid"/"
+	export SWAYSOCK=$(find $XDG_RUNTIME_DIR -maxdepth 1 -iname 'sway*sock')
+fi
+
+for OUTPUT in `swaymsg -t get_outputs | jq -r '.[] | select(.active == true) | .name'`
+do
+    IMAGE=/tmp/$OUTPUT-lock.png
+    grim -o $OUTPUT $IMAGE
+    convert -blur 0x6 $IMAGE $IMAGE
+    LOCKARGS="${LOCKARGS} --image ${OUTPUT}:${IMAGE}"
+    IMAGES="${IMAGES} ${IMAGE}"
+done
+
+
+systemd-notify --ready
+
+swaylock $LOCKARGS 
+rm $IMAGES

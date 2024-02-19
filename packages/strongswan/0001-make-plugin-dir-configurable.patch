@@ -1,0 +1,27 @@
+From ebaa32f5b505fc4f623f709481e04986e585a890 Mon Sep 17 00:00:00 2001
+From: Stefan Mayer <stevijo.mayer@gmail.com>
+Date: Wed, 4 Dec 2024 19:49:55 +0100
+Subject: [PATCH] make plugin dir configurable
+
+---
+ src/libstrongswan/plugins/plugin_loader.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/src/libstrongswan/plugins/plugin_loader.c b/src/libstrongswan/plugins/plugin_loader.c
+index 30b1aeed0..13c04c84c 100644
+--- a/src/libstrongswan/plugins/plugin_loader.c
++++ b/src/libstrongswan/plugins/plugin_loader.c
+@@ -1245,9 +1245,7 @@ METHOD(plugin_loader_t, load_plugins, bool,
+ 	char *default_path = NULL, *plugins, *token;
+ 	bool critical_failed = FALSE;
+ 
+-#ifdef PLUGINDIR
+-	default_path = PLUGINDIR;
+-#endif /* PLUGINDIR */
++	default_path = getenv("PLUGINDIR");
+ 
+ 	plugins = modular_pluginlist(list);
+ 
+-- 
+2.44.1
+
