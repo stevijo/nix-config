@@ -1,0 +1,25 @@
+From cf18e4ef5e318c549886a8b367afc06e8514d914 Mon Sep 17 00:00:00 2001
+From: Stefan Mayer <stevijo.mayer@googlemail.com>
+Date: Sat, 4 Jan 2025 14:15:04 +0100
+Subject: [PATCH] fix dispatch trace
+
+---
+ plugins/dispatch-trace/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/plugins/dispatch-trace/main.c b/src/plugins/dispatch-trace/main.c
+index 40a87dde0..484abfceb 100644
+--- a/plugins/dispatch-trace/main.c
++++ b/plugins/dispatch-trace/main.c
+@@ -121,7 +121,7 @@ dispatch_pcap_trace (vlib_main_t *vm, vlib_node_runtime_t *node,
+ 	  string_count++;
+ 
+ 	  /* Is this packet traced? */
+-	  if (PREDICT_FALSE (b->flags & VLIB_BUFFER_IS_TRACED))
++	  if (PREDICT_FALSE (b->flags & VLIB_BUFFER_IS_TRACED) && (vlib_buffer_get_trace_thread (b) == vm->thread_index))
+ 	    {
+ 	      vlib_trace_header_t **h = pool_elt_at_index (
+ 		tm->trace_buffer_pool, vlib_buffer_get_trace_index (b));
+-- 
+2.44.1
+

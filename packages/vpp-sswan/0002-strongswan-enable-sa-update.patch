@@ -1,0 +1,169 @@
+From af724ee5d04fb91c48477423f26d09a210316672 Mon Sep 17 00:00:00 2001
+From: Stefan Mayer <stevijo.mayer@googlemail.com>
+Date: Tue, 24 Dec 2024 11:29:52 +0100
+Subject: [PATCH 2/2] strongswan: enable sa update
+
+---
+ .../strongswan/vpp_sswan/kernel_vpp_ipsec.c   | 125 +++++++++++++++++-
+ 1 file changed, 119 insertions(+), 6 deletions(-)
+
+diff --git a/kernel_vpp_ipsec.c b/kernel_vpp_ipsec.c
+index e1c71edc8..0f7547a08 100644
+--- a/kernel_vpp_ipsec.c
++++ b/kernel_vpp_ipsec.c
+@@ -1370,6 +1370,7 @@ sa_expired (vpp_sa_expired_t *expired)
+ {
+   private_kernel_vpp_ipsec_t *this = expired->manager;
+   sa_t *sa;
++  uint32_t offset = expired->hard_offset;
+   kernel_ipsec_sa_id_t *id = expired->sa_id;
+ 
+   this->mutex->lock (this->mutex);
+@@ -1378,7 +1379,15 @@ sa_expired (vpp_sa_expired_t *expired)
+   if (sa)
+     {
+       charon->kernel->expire (charon->kernel, id->proto, id->spi, id->dst,
+-			      FALSE);
++			       offset == 0);
++    }
++
++  if (offset != 0) 
++    {
++      // requeue with hard expiration
++      expired->hard_offset = 0;
++      this->mutex->unlock (this->mutex);
++      return JOB_RESCHEDULE(offset);
+     }
+ 
+   if (id->src)
+@@ -1665,9 +1674,111 @@ error:
+ METHOD (kernel_ipsec_t, update_sa, status_t, private_kernel_vpp_ipsec_t *this,
+ 	kernel_ipsec_sa_id_t *id, kernel_ipsec_update_sa_t *data)
+ {
+-  DBG1 (DBG_KNL,
+-	"update sa not supported!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+-  return NOT_SUPPORTED;
++  status_t rv = FAILED;
++  sa_t *sa;
++  chunk_t dst, src;
++  kernel_ipsec_sa_id_t *sa_id;
++  vl_api_ipsec_sad_entry_update_t *mp = NULL;
++  vl_api_ipsec_sad_entry_update_reply_t *rmp = NULL;
++  vl_api_ipsec_sa_v5_dump_t *qmp = NULL;
++  vl_api_ipsec_sa_v5_details_t *qrmp = NULL;
++  char *query_out = NULL;
++  char *out = NULL;
++  int out_len;
++
++  this->mutex->lock (this->mutex);
++  sa = this->sas->get (this->sas, id);
++  if (!sa)
++    {
++      this->mutex->unlock (this->mutex);
++      DBG1 (DBG_KNL, "SA not found");
++      return NOT_FOUND;
++    }
++
++  qmp = vl_msg_api_alloc(sizeof (*qmp));
++  memset(qmp, 0, sizeof (*qmp));
++  qmp->sa_id = htonl (sa->sa_id);
++  u16 q_msg_id = vl_msg_api_get_msg_index((u8 *) "ipsec_sa_v5_dump_2076c2f4");
++  qmp->_vl_msg_id = htons (q_msg_id);
++
++  if (vac->send (vac, (char *) qmp, sizeof (*qmp), &query_out, &out_len))
++    {
++      DBG1 (DBG_KNL, "dump SA failed");
++      free (query_out);
++      vl_msg_api_free (qmp);
++      this->mutex->unlock (this->mutex);
++
++      return FAILED;
++    }
++  vl_msg_api_free (qmp);
++  qrmp = (void *) query_out;
++
++  mp = vl_msg_api_alloc (sizeof (*mp));
++  memset (mp, 0, sizeof (*mp));
++  u16 msg_id =
++    vl_msg_api_get_msg_index ((u8 *) "ipsec_sad_entry_update_1412af86");
++  mp->_vl_msg_id = htons (msg_id);
++  mp->sad_id = htonl (sa->sa_id);
++  mp->tunnel = qrmp->entry.tunnel;
++  mp->is_tun = true;
++
++  bool is_ipv6 = false;
++  if (data->new_src->get_family (data->new_src) == AF_INET6)
++    {
++      is_ipv6 = true;
++      mp->tunnel.src.af = htonl (ADDRESS_IP6);
++      mp->tunnel.dst.af = htonl (ADDRESS_IP6);
++    } 
++  else 
++    {
++      mp->tunnel.src.af = htonl (ADDRESS_IP4);
++      mp->tunnel.dst.af = htonl (ADDRESS_IP4);
++    }
++
++  mp->udp_src_port = htons (data->new_src->get_port (data->new_src));
++  mp->udp_dst_port = htons (data->new_dst->get_port (data->new_dst));
++
++  src = data->new_src->get_address (data->new_src);
++  memcpy (is_ipv6 ? mp->tunnel.src.un.ip6 : mp->tunnel.src.un.ip4,
++	  src.ptr, src.len);
++  dst = data->new_dst->get_address (data->new_dst);
++  memcpy (is_ipv6 ? mp->tunnel.dst.un.ip6 : mp->tunnel.dst.un.ip4,
++	  dst.ptr, dst.len);
++
++  if (vac->send (vac, (char *) mp, sizeof (*mp), &out, &out_len))
++    {
++      DBG1 (DBG_KNL, "update SA failed");
++      goto error;
++    }
++  rmp = (void *) out;
++  if (rmp->retval)
++    {
++      DBG1 (DBG_KNL, "update SA failed rv:%d", ntohl (rmp->retval));
++      goto error;
++    }
++  
++  void *temp = this->sas->remove (this->sas, id);
++  if (sa->sa_id_p)
++    {
++      if (sa->sa_id_p->src)
++	sa->sa_id_p->src->destroy (sa->sa_id_p->src);
++      if (sa->sa_id_p->dst)
++	sa->sa_id_p->dst->destroy (sa->sa_id_p->dst);
++      free (sa->sa_id_p);
++    }
++  INIT (sa_id, .src = data->new_src->clone (data->new_src),
++	.dst = data->new_dst->clone (data->new_dst), .spi = id->spi, .proto = id->proto, );
++  sa->sa_id_p = sa_id;
++  this->sas->put (this->sas, sa_id, sa);
++
++  rv = SUCCESS;
++
++error:
++  free (out);
++  free (query_out);
++  vl_msg_api_free (mp);
++  this->mutex->unlock (this->mutex);
++  return rv;
+ }
+ 
+ METHOD (kernel_ipsec_t, query_sa, status_t, private_kernel_vpp_ipsec_t *this,
+@@ -1829,8 +1940,10 @@ METHOD (kernel_ipsec_t, del_sa, status_t, private_kernel_vpp_ipsec_t *this,
+   free (sa);
+   rv = SUCCESS;
+ error:
+-  free (out);
+-  vl_msg_api_free (mp);
++  if (out != NULL) 
++    free (out);
++  if (mp != NULL)
++    vl_msg_api_free (mp);
+   this->mutex->unlock (this->mutex);
+   return rv;
+ }
+-- 
+2.44.1
+
