@@ -30,7 +30,7 @@ in
         settings = {
           cpu = {
             main-core = 0;
-            workers = 2;
+            workers = 3;
           };
           api-segment = {
             prefix = false;
@@ -76,6 +76,9 @@ in
           set int tcp-mss-clamp gre0 ip4 enable ip4-mss 1374 ip6 disable
           ip route add 224.0.0.5/32 via gre0
           ip route add ff02::5/128 via gre0
+
+          set ipsec async mode on
+          set crypto async dispatch mode polling
 
           comment { "External wireguard" }
           wireguard create listen-port 51820 private-key !!PRIVATE-REMOTE!! src 185.175.59.204

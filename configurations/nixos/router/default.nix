@@ -5,13 +5,6 @@
 let
   inherit (flake) inputs;
   inherit (inputs) self;
-
-  swan-log = pkgs.writeText "swan-log.conf" ''
-    log {
-        default = 3
-        knl = 3
-    }
-  '';
 in
 {
   imports = [
@@ -22,7 +15,6 @@ in
     ./frr.nix
     ./strongswan.nix
     (self + /modules/nixos/linux/docker.nix)
-    (self + /modules/nixos/linux/vpp)
   ];
 
   nixos-unified.sshTarget = "stevijo@router";
