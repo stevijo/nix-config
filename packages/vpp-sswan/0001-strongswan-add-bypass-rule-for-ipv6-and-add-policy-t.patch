@@ -1,14 +1,14 @@
-From e143a9d45990ec62e056ef08782556176250e4ba Mon Sep 17 00:00:00 2001
+From f6a22902b3701193d53a04b187c31453f019ae71 Mon Sep 17 00:00:00 2001
 From: Stefan Mayer <stevijo.mayer@gmail.com>
 Date: Thu, 5 Dec 2024 18:30:48 +0100
 Subject: [PATCH] strongswan: add bypass rule for ipv6 and add policy to loop0
 
 ---
- .../strongswan/vpp_sswan/kernel_vpp_ipsec.c   | 70 +++++++++----------
- 1 file changed, 34 insertions(+), 36 deletions(-)
+ .../strongswan/vpp_sswan/kernel_vpp_ipsec.c   | 68 +++++++++----------
+ 1 file changed, 33 insertions(+), 35 deletions(-)
 
 diff --git a/kernel_vpp_ipsec.c b/kernel_vpp_ipsec.c
-index e1c71edc8..d535d94ad 100644
+index e1c71edc8..ff348aa35 100644
 --- a/kernel_vpp_ipsec.c
 +++ b/kernel_vpp_ipsec.c
 @@ -809,14 +809,14 @@ bypass_all (bool add, uint32_t spd_id, uint32_t sa_id, uint32_t priority)
@@ -16,7 +16,7 @@ index e1c71edc8..d535d94ad 100644
    mp->entry.sa_id = ntohl (sa_id);
    mp->entry.spd_id = ntohl (spd_id);
 -  mp->entry.priority = ntohl (priority - POLICY_PRIORITY_PASS);
-+  mp->entry.priority = ntohl (0);
++  mp->entry.priority = 0;
    mp->entry.is_outbound = 0;
    mp->entry.policy = ntohl (IPSEC_API_SPD_ACTION_BYPASS);
    memset (mp->entry.local_address_stop.un.ip6, 0xFF, 16);
@@ -137,15 +137,6 @@ index e1c71edc8..d535d94ad 100644
        INIT (spd, .spd_id = spd_id, .sw_if_index = sw_if_index, .policy_num = 0,
  	    .if_name = strdup (interface), );
        this->spds->put (this->spds, spd->if_name, spd);
-@@ -1102,7 +1099,7 @@ manage_policy (private_kernel_vpp_ipsec_t *this, bool add,
-   mp->_vl_msg_id = htons (msg_id);
-   mp->is_add = add;
-   mp->entry.spd_id = htonl (spd->spd_id);
--  mp->entry.priority = htonl (priority - POLICY_PRIORITY_DEFAULT);
-+  mp->entry.priority = 0;
-   mp->entry.is_outbound = id->dir == POLICY_OUT;
-   switch (data->type)
-     {
 @@ -1273,6 +1270,7 @@ next:
  	    "policy_num's ref is 0, delete spd_id %d sw_if_index %d sad_id %x",
  	    spd->spd_id, spd->sw_if_index, sad_id);
