@@ -28,6 +28,16 @@ in
       main = {
         enable = true;
         settings = {
+          dpdk = {
+            dev = {
+              default = {
+                num-tx-queues = 2;
+                num-rx-queues = 2;
+                num-rx-desc = 512;
+                num-tx-desc = 512;
+              };
+            };
+          };
           cpu = {
             main-core = 0;
             workers = 3;
