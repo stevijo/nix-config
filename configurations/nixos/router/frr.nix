@@ -23,10 +23,10 @@ in
       interface wg0
        ip ospf area 1.1.1.1
        ip ospf dead-interval 40
-       ip ospf bfd
+       ip ospf bfd profile wireguard
        ip ospf6 area 1.1.1.1
        ip ospf6 cost 30
-       ip ospf6 bfd
+       ip ospf6 bfd profile wireguard
       exit
       !
       ip prefix-list hosthatch seq 1 permit 10.32.32.0/24
