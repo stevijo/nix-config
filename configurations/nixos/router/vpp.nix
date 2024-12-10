@@ -37,6 +37,8 @@ in
                 num-tx-desc = 512;
               };
             };
+            no-multi-seg = true;
+            no-tx-checksum-offload = true;
           };
           cpu = {
             main-core = 0;
