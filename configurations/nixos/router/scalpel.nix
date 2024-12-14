@@ -23,6 +23,8 @@ in
   scalpel.trafos."swanctl.conf" = with config.sops.secrets; {
     source = builtins.toString strongswanConfig;
     matchers."ROUTER-IP".secret = router-ip.path;
+    matchers."REMOTE-MASTERMIND".secret = remote-mastermind.path;
+    matchers."IPSEC-MASTERMIND".secret = ikev2-new.path;
     matchers."IPSEC".secret = ikev2-password.path;
     matchers."REMOTE".secret = remote.path;
     owner = "root";
@@ -34,6 +36,7 @@ in
     matchers."ROUTER-IP".secret = router-ip.path;
     matchers."ROUTER-IP6".secret = router-ip6.path; 
     matchers."PRIVATE".secret = ikev2-password.path;
+    matchers."REMOTE-MASTERMIND".secret = remote-mastermind.path;
     matchers."PRIVATE-REMOTE".secret = private-remote.path;
     matchers."PREFIX".secret = prefix.path;
     owner = "root";

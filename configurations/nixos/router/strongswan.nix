@@ -86,9 +86,49 @@ in
             };
           };
         };
+        mastermind = {
+          proposals = [
+            "aes256-sha256-modp2048"
+          ];
+          version = 2;
+          local_addrs = [
+            "!!ROUTER-IP!!"
+          ];
+          local = {
+            vpp = {
+              id = "!!ROUTER-IP!!";
+              auth = "psk";
+            };
+          };
+          remote = {
+            vyos = {
+              id = "!!REMOTE-MASTERMIND!!";
+              auth = "psk";
+            };
+          };
+          children = {
+            tunnel = {
+              esp_proposals = [
+                "aes256gcm128-sha256-modp2048"
+              ];
+              mode = "tunnel";
+              local_ts = [ "!!ROUTER-IP!!/32" ];
+              remote_ts = [ "!!REMOTE-MASTERMIND!!/32" ];
+              start_action = "start";
+            };
+          };
+        };
+
       };
       secrets = {
         ike = {
+          mastermind = {
+            id = {
+                "1" = "!!ROUTER-IP!!";
+                "2" = "!!REMOTE-MASTERMIND!!";
+            };
+            secret = "!!IPSEC-MASTERMIND!!";
+          };
           vyos = {
             id = {
               "1" = "!!ROUTER-IP!!";

@@ -92,6 +92,12 @@ in
           set ipsec async mode on
           set crypto async dispatch mode polling
 
+          create gre tunnel src !!ROUTER-IP!! dst !!REMOTE-MASTERMIND!!
+          lcp create gre1 host-if wg1 tun
+          set int state gre1 up
+          set int mtu packet 1420 gre1
+          ip route add ff02::5/128 via gre1
+
           comment { "External wireguard" }
           wireguard create listen-port 51820 private-key !!PRIVATE-REMOTE!! src 185.175.59.204
           wireguard peer add wg0 public-key dGNfVhc6e/PNLnRs0Qspkvl1RYwsq0vshxacC4rS+i4= allowed-ip 172.30.0.5/32 allowed-ip !!PREFIX!!:dead::5/128 persistent-keepalive 60

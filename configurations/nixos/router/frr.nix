@@ -29,6 +29,12 @@ in
        ip ospf6 bfd profile wireguard
       exit
       !
+      interface wg1
+       ip ospf6 area 1.1.1.1
+       ip ospf6 cost 50
+       ip ospf6 bfd
+      exit
+      !
       ip prefix-list hosthatch seq 1 permit 10.32.32.0/24
       !
       router ospf
