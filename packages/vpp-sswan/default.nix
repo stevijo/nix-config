@@ -17,16 +17,11 @@ let
     installPhase = "cp -pr --reflink=auto -- . $out";
   });
 in
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "vpp-sswan";
-  version = "24.06";
+  version = vpp.version;
 
-  src = fetchFromGitHub {
-    owner = "FDio";
-    repo = "vpp";
-    rev = "v${version}";
-    hash = "sha256-AbdtH3ha/Bzj9tAkp4OhjRcUZilUEt+At0LukWN2LJU=";
-  };
+  src = vpp.src;
   patches = [
     ./0001-strongswan-add-bypass-rule-for-ipv6-and-add-policy-t.patch
   ];

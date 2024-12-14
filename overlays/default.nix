@@ -14,4 +14,5 @@ rec {
   strongswan = strongswan'.withPlugins [
     vpp-sswan
   ];
+  vpp =  self.callPackage "${packages}/vpp.nix" { inherit (super) vpp; };
 }
