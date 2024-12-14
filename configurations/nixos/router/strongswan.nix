@@ -5,13 +5,6 @@
 let
   inherit (flake) inputs;
   inherit (inputs) self;
-
-  swan-log = pkgs.writeText "swan-log.conf" ''
-    log {
-        default = 3
-        knl = 3
-    }
-  '';
 in
 {
 
@@ -32,9 +25,6 @@ in
   };
   services.strongswan-swanctl = {
     enable = true;
-    includes = [
-      swan-log
-    ];
     strongswan.extraConfig = ''
        charon-systemd {
          journal {
@@ -64,13 +54,13 @@ in
           ];
           local = {
             vpp = {
-              id = "!!ROUTER-IP!!";
+              id = "vpp";
               auth = "psk";
             };
           };
           remote = {
             vyos = {
-              id = "!!REMOTE!!";
+              id = "vyos";
               auth = "psk";
             };
           };
@@ -124,15 +114,15 @@ in
         ike = {
           mastermind = {
             id = {
-                "1" = "!!ROUTER-IP!!";
-                "2" = "!!REMOTE-MASTERMIND!!";
+              "1" = "!!ROUTER-IP!!";
+              "2" = "!!REMOTE-MASTERMIND!!";
             };
             secret = "!!IPSEC-MASTERMIND!!";
           };
           vyos = {
             id = {
-              "1" = "!!ROUTER-IP!!";
-              "2" = "!!REMOTE!!";
+              "1" = "vyos";
+              "2" = "vpp";
             };
             secret = "!!IPSEC!!";
           };

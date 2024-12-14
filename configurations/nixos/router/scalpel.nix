@@ -34,7 +34,7 @@ in
   scalpel.trafos."main-startup.conf" = with config.sops.secrets; {
     source = builtins.toString mainStartup;
     matchers."ROUTER-IP".secret = router-ip.path;
-    matchers."ROUTER-IP6".secret = router-ip6.path; 
+    matchers."ROUTER-IP6".secret = router-ip6.path;
     matchers."PRIVATE".secret = ikev2-password.path;
     matchers."REMOTE-MASTERMIND".secret = remote-mastermind.path;
     matchers."PRIVATE-REMOTE".secret = private-remote.path;
