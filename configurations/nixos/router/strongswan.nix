@@ -84,6 +84,9 @@ in
           local_addrs = [
             "!!ROUTER-IP!!"
           ];
+          remote_addrs = [
+            "!!REMOTE-MASTERMIND!!"
+          ]; 
           local = {
             vpp = {
               id = "!!ROUTER-IP!!";
