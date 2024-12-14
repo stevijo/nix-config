@@ -74,7 +74,7 @@ in
           set int ip address $(ETH1) 10.32.32.2/24
           set int state $(ETH1) up
 
-          comment { "internal" }
+          comment { "Internal ipsec connection" }
           loopback create
           set int state loop0 up
           set int ip address loop0 10.12.0.1/24
@@ -99,6 +99,8 @@ in
           ip route add ff02::5/128 via gre1
 
           comment { "External wireguard" }
+          set wireguard async mode on
+
           wireguard create listen-port 51820 private-key !!PRIVATE-REMOTE!! src 185.175.59.204
           wireguard peer add wg0 public-key dGNfVhc6e/PNLnRs0Qspkvl1RYwsq0vshxacC4rS+i4= allowed-ip 172.30.0.5/32 allowed-ip !!PREFIX!!:dead::5/128 persistent-keepalive 60
           wireguard peer add wg0 public-key DTSn1nYNsiEIssdXLSKP0juaqOzdQBtLoNyfH25DAGg= allowed-ip 172.30.0.3/32 allowed-ip !!PREFIX!!:dead::3/128 persistent-keepalive 60
