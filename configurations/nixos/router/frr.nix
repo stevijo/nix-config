@@ -25,13 +25,13 @@ in
        ip ospf dead-interval 40
        ip ospf bfd profile wireguard
        ip ospf6 area 1.1.1.1
-       ip ospf6 cost 30
+       ip ospf6 cost 1
        ip ospf6 bfd profile wireguard
       exit
       !
       interface wg1
        ip ospf6 area 1.1.1.1
-       ip ospf6 cost 50
+       ip ospf6 cost 30
        ip ospf6 bfd
       exit
       !
