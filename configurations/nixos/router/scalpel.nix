@@ -26,7 +26,10 @@ in
     matchers."REMOTE-MASTERMIND".secret = remote-mastermind.path;
     matchers."IPSEC-MASTERMIND".secret = ikev2-new.path;
     matchers."IPSEC".secret = ikev2-password.path;
+    matchers."IPSEC-FRITZ".secret = ikev-fritz.path;
     matchers."REMOTE".secret = remote.path;
+    matchers."REMOTE-LOCAL".secret = remote-local.path;
+    matchers."REMOTE-FRITZ".secret = remote-fritz.path;
     owner = "root";
     group = "root";
     mode = "0444";

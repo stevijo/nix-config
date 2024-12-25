@@ -33,6 +33,7 @@ in
        }
        charon {
           load_modular = yes
+          i_dont_care_about_security_and_use_aggressive_mode_psk = yes
           plugins {
             include ${pkgs.strongswan}/etc/strongswan.d/charon/kernel-vpp.conf
             include ${pkgs.strongswan}/etc/strongswan.d/charon/openssl.conf
@@ -108,7 +109,38 @@ in
             };
           };
         };
-
+        fritz = {
+          proposals = [
+            "aes256-sha512-modp1024"
+          ];
+          local_addrs = [
+            "!!ROUTER-IP!!"
+          ];
+          local = {
+            vpp = {
+              id = "!!REMOTE-LOCAL!!";
+              auth = "psk";
+            };
+          };
+          remote = {
+            fritz = {
+              id = "!!REMOTE-FRITZ!!";
+              auth = "psk";
+            };
+          };
+          aggressive = true;
+          children = {
+            tunnel = {
+              esp_proposals = [
+                "aes256-sha512-modp1024"
+              ];
+              mode = "tunnel";
+              local_ts = [ "192.168.178.0/24" ];
+              remote_ts = [ "192.168.2.0/24" ];
+              start_action = "start";
+            };
+          };
+        };
       };
       secrets = {
         ike = {
@@ -125,6 +157,13 @@ in
               "2" = "vpp";
             };
             secret = "!!IPSEC!!";
+          };
+          home = {
+            id = {
+              "1" = "!!REMOTE-FRITZ!!";
+              "2" = "!!REMOTE-LOCAL!!";
+            };
+            secret = "!!IPSEC-FRITZ!!";
           };
         };
       };

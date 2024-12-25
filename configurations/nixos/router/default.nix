@@ -24,6 +24,9 @@ in
   ];
   sops.secrets.ikev2-password = { };
   sops.secrets.ikev2-new = { };
+  sops.secrets.ikev-fritz = { };
+  sops.secrets.remote-fritz = { };
+  sops.secrets.remote-local = { };
   sops.secrets.private-remote = { };
   sops.secrets.router-ip = { };
   sops.secrets.router-ip6 = { };

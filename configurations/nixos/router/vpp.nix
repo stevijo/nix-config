@@ -78,6 +78,7 @@ in
           loopback create
           set int state loop0 up
           set int ip address loop0 10.12.0.1/24
+          set int ip address loop0 192.168.178.30/32
           set ip neighbor loop0 10.12.0.2 24:6e:96:9c:e5:de
 
           create gre tunnel src 10.12.0.1 dst 10.12.0.2
