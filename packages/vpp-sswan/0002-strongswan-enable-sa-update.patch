@@ -1,16 +1,25 @@
-From a6f5567efb80a979cfa81b48abe4dd867ff02b39 Mon Sep 17 00:00:00 2001
+From 0ea5073e5a3943fbd6ccdf714f0b08bc6d6857cb Mon Sep 17 00:00:00 2001
 From: Stefan Mayer <stevijo.mayer@googlemail.com>
 Date: Tue, 24 Dec 2024 11:29:52 +0100
 Subject: [PATCH 2/2] strongswan: enable sa update
 
 ---
- .../strongswan/vpp_sswan/kernel_vpp_ipsec.c   | 114 +++++++++++++++++-
- 1 file changed, 109 insertions(+), 5 deletions(-)
+ .../strongswan/vpp_sswan/kernel_vpp_ipsec.c   | 116 +++++++++++++++++-
+ 1 file changed, 110 insertions(+), 6 deletions(-)
 
 diff --git a/kernel_vpp_ipsec.c b/kernel_vpp_ipsec.c
-index e1c71edc8..9efd5c1c7 100644
+index e1c71edc8..9649b877e 100644
 --- a/kernel_vpp_ipsec.c
 +++ b/kernel_vpp_ipsec.c
+@@ -1378,7 +1378,7 @@ sa_expired (vpp_sa_expired_t *expired)
+   if (sa)
+     {
+       charon->kernel->expire (charon->kernel, id->proto, id->spi, id->dst,
+-			      FALSE);
++			      expired->hard_offset == 0);
+     }
+ 
+   if (id->src)
 @@ -1665,9 +1665,111 @@ error:
  METHOD (kernel_ipsec_t, update_sa, status_t, private_kernel_vpp_ipsec_t *this,
  	kernel_ipsec_sa_id_t *id, kernel_ipsec_update_sa_t *data)

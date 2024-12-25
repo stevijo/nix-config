@@ -135,6 +135,8 @@ in
                 "aes256-sha512-modp1024"
               ];
               mode = "tunnel";
+              life_time = "3960s";
+              rekey_time = "0";
               local_ts = [ "192.168.178.0/24" ];
               remote_ts = [ "192.168.2.0/24" ];
               start_action = "start";
