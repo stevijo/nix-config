@@ -23,6 +23,7 @@ in
   sops.secrets.hosts-file = {
     mode = "0444";
   };
+  sops.secrets.wg0 = { };
 
   environment.etc.hosts.source = lib.mkForce config.sops.secrets.hosts-file.path;
 
@@ -31,6 +32,32 @@ in
   services.blueman.enable = true;
   programs.steam = {
     enable = true;
+  };
+
+  networking.wireguard.enable = true;
+  networking.wg-quick.interfaces = {
+    wg0 = {
+      address = [
+        "172.30.0.5/24"
+        "2001:67c:634:dead::5/64"
+      ];
+      dns = [ "192.168.178.1" ];
+
+      listenPort = 51820;
+
+      privateKeyFile = config.sops.secrets.wg0.path;
+
+      peers = [
+        {
+          publicKey = "3ToM7Pg2tvAalsORya45gR0TS2wHSo7E5Mx7om0QISE=";
+          allowedIPs = [
+            "192.168.178.0/24"
+          ];
+          endpoint = "router:51820";
+          persistentKeepalive = 60;
+        }
+      ];
+    };
   };
 
   environment.systemPackages = with pkgs; [

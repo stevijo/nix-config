@@ -103,7 +103,7 @@ in
           set wireguard async mode on
 
           wireguard create listen-port 51820 private-key !!PRIVATE-REMOTE!! src 185.175.59.204
-          wireguard peer add wg0 public-key dGNfVhc6e/PNLnRs0Qspkvl1RYwsq0vshxacC4rS+i4= allowed-ip 172.30.0.5/32 allowed-ip !!PREFIX!!:dead::5/128 persistent-keepalive 60
+          wireguard peer add wg0 public-key sBuOg6S4eD3wPiAikxSQT+8hh45jbfOoi45/u8KYc2A= allowed-ip 172.30.0.5/32 allowed-ip !!PREFIX!!:dead::5/128 persistent-keepalive 60
           wireguard peer add wg0 public-key DTSn1nYNsiEIssdXLSKP0juaqOzdQBtLoNyfH25DAGg= allowed-ip 172.30.0.3/32 allowed-ip !!PREFIX!!:dead::3/128 persistent-keepalive 60
 
           ip route add 172.30.0.3/32 via wg0
