@@ -1,26 +1,42 @@
-From 0ea5073e5a3943fbd6ccdf714f0b08bc6d6857cb Mon Sep 17 00:00:00 2001
+From af724ee5d04fb91c48477423f26d09a210316672 Mon Sep 17 00:00:00 2001
 From: Stefan Mayer <stevijo.mayer@googlemail.com>
 Date: Tue, 24 Dec 2024 11:29:52 +0100
 Subject: [PATCH 2/2] strongswan: enable sa update
 
 ---
- .../strongswan/vpp_sswan/kernel_vpp_ipsec.c   | 116 +++++++++++++++++-
- 1 file changed, 110 insertions(+), 6 deletions(-)
+ .../strongswan/vpp_sswan/kernel_vpp_ipsec.c   | 125 +++++++++++++++++-
+ 1 file changed, 119 insertions(+), 6 deletions(-)
 
 diff --git a/kernel_vpp_ipsec.c b/kernel_vpp_ipsec.c
-index e1c71edc8..9649b877e 100644
+index e1c71edc8..0f7547a08 100644
 --- a/kernel_vpp_ipsec.c
 +++ b/kernel_vpp_ipsec.c
-@@ -1378,7 +1378,7 @@ sa_expired (vpp_sa_expired_t *expired)
+@@ -1370,6 +1370,7 @@ sa_expired (vpp_sa_expired_t *expired)
+ {
+   private_kernel_vpp_ipsec_t *this = expired->manager;
+   sa_t *sa;
++  uint32_t offset = expired->hard_offset;
+   kernel_ipsec_sa_id_t *id = expired->sa_id;
+ 
+   this->mutex->lock (this->mutex);
+@@ -1378,7 +1379,15 @@ sa_expired (vpp_sa_expired_t *expired)
    if (sa)
      {
        charon->kernel->expire (charon->kernel, id->proto, id->spi, id->dst,
 -			      FALSE);
-+			      expired->hard_offset == 0);
++			       offset == 0);
++    }
++
++  if (offset != 0) 
++    {
++      // requeue with hard expiration
++      expired->hard_offset = 0;
++      this->mutex->unlock (this->mutex);
++      return JOB_RESCHEDULE(offset);
      }
  
    if (id->src)
-@@ -1665,9 +1665,111 @@ error:
+@@ -1665,9 +1674,111 @@ error:
  METHOD (kernel_ipsec_t, update_sa, status_t, private_kernel_vpp_ipsec_t *this,
  	kernel_ipsec_sa_id_t *id, kernel_ipsec_update_sa_t *data)
  {
@@ -135,7 +151,7 @@ index e1c71edc8..9649b877e 100644
  }
  
  METHOD (kernel_ipsec_t, query_sa, status_t, private_kernel_vpp_ipsec_t *this,
-@@ -1829,8 +1931,10 @@ METHOD (kernel_ipsec_t, del_sa, status_t, private_kernel_vpp_ipsec_t *this,
+@@ -1829,8 +1940,10 @@ METHOD (kernel_ipsec_t, del_sa, status_t, private_kernel_vpp_ipsec_t *this,
    free (sa);
    rv = SUCCESS;
  error:
