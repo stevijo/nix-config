@@ -23,12 +23,8 @@ dev:
 
 # Activate the configuration
 [group('Main')]
-@run target='default':
-  if [ "{{target}}" = "default" ]; then \
-    nix run .; \
-  else \
-    nix run .#activate -- {{target}}; \
-  fi
+@run *args:
+    nix run . {{args}}
 
 # Run this after editing .sops.yaml
 [group('Main')]
