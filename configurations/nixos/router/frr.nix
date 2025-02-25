@@ -17,9 +17,7 @@ in
     ospf6d.enable = true;
     config = ''
       ip route 0.0.0.0/0 !!ROUTER-GW!! e0
-      ip route 192.168.2.0/24 local0
       ipv6 route 2605:4840:ffff::179/128 fe80::1 e0
-      ipv6 route !!PREFIX!!:deaf::/64 wg2
       !
       interface wg0
        ip ospf area 1.1.1.1
