@@ -22,10 +22,12 @@ in
       interface wg0
        ip ospf area 1.1.1.1
        ip ospf dead-interval 40
+       ip ospf bfd
        ip ospf bfd profile wireguard
        ip ospf network point-to-point
        ip ospf6 area 1.1.1.1
        ip ospf6 cost 1
+       ip ospf6 bfd
        ip ospf6 bfd profile wireguard
       exit
       !
