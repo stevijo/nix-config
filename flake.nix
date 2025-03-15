@@ -5,6 +5,8 @@
     # Principle inputs (updated by `nix run .#update`)
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    lanzaboote.url = "github:nix-community/lanzaboote/v0.4.2";
+    lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager/release-24.11";

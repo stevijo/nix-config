@@ -9,6 +9,7 @@ in
 {
   imports = [
     inputs.sops-nix.nixosModules.sops
+    inputs.lanzaboote.nixosModules.lanzaboote
     self.nixosModules.default
     inputs.nixos-hardware.nixosModules.framework-11th-gen-intel
     ./configuration.nix
@@ -79,6 +80,8 @@ in
     sysstat
     firefox
     rclone
+    tpm2-tss
+    sbctl
   ];
 
   environment.variables = {
@@ -139,6 +142,15 @@ in
       };
     };
   }];
+
+  boot.lanzaboote = {
+    enable = true;
+    pkiBundle = "/etc/secureboot";
+  };
+  boot.loader.systemd-boot.enable = lib.mkForce false;
+  boot.initrd.systemd.enable = true;
+  boot.resumeDevice = "/dev/disk/by-uuid/b30200b1-b70d-4832-979e-be2a51413369"; 
+  services.fstrim.enable = true;
 
   users.users.stevijo = {
     extraGroups = [ "video" "docker" "adbusers" "wireshark" ];
