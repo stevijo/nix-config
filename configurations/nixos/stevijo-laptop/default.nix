@@ -5,12 +5,6 @@
 let
   inherit (flake) inputs;
   inherit (inputs) self;
-  update-script = pkgs.writeShellScriptBin "update-tpm-keys" ''
-    read -s -p "TPM Password: " password
-    echo
-    sudo env PASSWORD=$password ${pkgs.systemd}/bin/systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+2+4+7 /dev/nvme0n1p3
-    sudo env PASSWORD=$password ${pkgs.systemd}/bin/systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+2+4+7 /dev/nvme0n1p2
-  '';
 in
 {
   imports = [
@@ -70,26 +64,36 @@ in
     };
   };
 
-  environment.systemPackages = with pkgs; [
-    git
-    restic
-    nautilus
-    lm_sensors
-    acpi
-    imagemagick
-    nodejs_20
-    python3
-    gnome-control-center
-    gnome-tweaks
-    google-chrome
-    alsa-utils
-    sysstat
-    firefox
-    rclone
-    tpm2-tss
-    sbctl
-    update-script
-  ];
+  environment.systemPackages =
+    let
+      update-script = pkgs.writeShellScriptBin "update-tpm-keys" ''
+        read -s -p "TPM Password: " password
+        echo
+        sudo env PASSWORD=$password ${pkgs.systemd}/bin/systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+2+4+7 /dev/nvme0n1p3
+        sudo env PASSWORD=$password ${pkgs.systemd}/bin/systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+2+4+7 /dev/nvme0n1p2
+      '';
+
+    in
+    with pkgs; [
+      git
+      restic
+      nautilus
+      lm_sensors
+      acpi
+      imagemagick
+      nodejs_20
+      python3
+      gnome-control-center
+      gnome-tweaks
+      google-chrome
+      alsa-utils
+      sysstat
+      firefox
+      rclone
+      tpm2-tss
+      sbctl
+      update-script
+    ];
 
   environment.variables = {
     NIXOS_OZONE_WL = 1;
@@ -156,7 +160,7 @@ in
   };
   boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.initrd.systemd.enable = true;
-  boot.resumeDevice = "/dev/disk/by-uuid/b30200b1-b70d-4832-979e-be2a51413369"; 
+  boot.resumeDevice = "/dev/disk/by-uuid/b30200b1-b70d-4832-979e-be2a51413369";
   services.fstrim.enable = true;
 
   users.users.stevijo = {
