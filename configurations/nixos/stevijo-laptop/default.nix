@@ -5,6 +5,11 @@
 let
   inherit (flake) inputs;
   inherit (inputs) self;
+  update-script = pkgs.writeShellScriptBin "update-tpm-keys" ''
+    read -s -p "TPM Password: " password
+    sudo env PASSWORD=$password ${pkgs.systemd}/bin/systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+1+2+3+4+5+7 /dev/nvme0n1p3
+    sudo env PASSWORD=$password ${pkgs.systemd}/bin/systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+1+2+3+4+5+7 /dev/nvme0n1p2
+  '';
 in
 {
   imports = [
@@ -82,6 +87,7 @@ in
     rclone
     tpm2-tss
     sbctl
+    update-script
   ];
 
   environment.variables = {
