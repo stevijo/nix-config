@@ -160,8 +160,14 @@ in
   };
   boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.initrd.systemd.enable = true;
+  boot.supportedFilesystems = [ "zfs" ];
+  boot.zfs.allowHibernation = true;
+  boot.zfs.forceImportRoot = false;
+  networking.hostId = "2f6bdf89";
   boot.resumeDevice = "/dev/disk/by-uuid/b30200b1-b70d-4832-979e-be2a51413369";
   services.fstrim.enable = true;
+
+  hardware.ledger.enable = true;
 
   users.users.stevijo = {
     extraGroups = [ "video" "docker" "adbusers" "wireshark" ];
