@@ -92,6 +92,8 @@ in
       rclone
       tpm2-tss
       sbctl
+      texmaker
+      texliveFull
       update-script
     ];
 
