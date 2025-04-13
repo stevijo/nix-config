@@ -94,6 +94,7 @@ in
       sbctl
       texmaker
       texliveFull
+      prismlauncher
       update-script
     ];
 
@@ -113,6 +114,7 @@ in
       intel-media-driver
       intel-vaapi-driver
       libvdpau-va-gl
+      libGL
     ];
   };
   hardware.bluetooth.enable = true;
