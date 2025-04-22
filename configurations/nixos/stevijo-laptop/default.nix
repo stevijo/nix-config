@@ -174,7 +174,7 @@ in
   hardware.ledger.enable = true;
 
   users.users.stevijo = {
-    extraGroups = [ "video" "docker" "adbusers" "wireshark" ];
+    extraGroups = [ "video" "docker" "adbusers" "wireshark" "dialout" ];
   };
   # Enable home-manager for "stevijo" user
   home-manager.users."stevijo" = {
