@@ -492,6 +492,9 @@ in
               (
                 instance.kernelModule != null
               ) "-/run/current-system/sw/bin/modprobe ${instance.kernelModule}");
+          Environment = [
+            "vpp_use_dpdk_cryptodev=yes"
+          ];
           ExecStart = "${instance.package}/bin/vpp -c ${instance.settingsFile}";
           Type = "simple";
           Restart = "on-failure";

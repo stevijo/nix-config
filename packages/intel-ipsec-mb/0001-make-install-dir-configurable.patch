@@ -1,0 +1,50 @@
+From f51b8affd0445eba738249ca6f0b31f1a8f07d3c Mon Sep 17 00:00:00 2001
+From: Stefan Mayer <stevijo.mayer@googlemail.com>
+Date: Sat, 26 Apr 2025 20:39:34 +0200
+Subject: [PATCH] make install dir configurable
+
+---
+ CMakeLists.txt       |  3 ++-
+ lib/cmake/unix.cmake | 11 +++++++----
+ 2 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 9b432ad9..f85b6cc4 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -27,7 +27,8 @@
+ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/utils.cmake")
+ 
+ # get version from public header file
+-imb_get_version("${CMAKE_CURRENT_SOURCE_DIR}/lib/intel-ipsec-mb.h")
++set(IMB_HDR "${CMAKE_CURRENT_SOURCE_DIR}/lib/intel-ipsec-mb.h")
++imb_get_version(${IMB_HDR})
+ message(STATUS "Project Version: ${IPSEC_MB_VERSION_FULL}")
+ 
+ cmake_minimum_required(VERSION 3.16)
+diff --git a/lib/cmake/unix.cmake b/lib/cmake/unix.cmake
+index 78aafaee..c5896538 100644
+--- a/lib/cmake/unix.cmake
++++ b/lib/cmake/unix.cmake
+@@ -94,11 +94,14 @@ set_target_properties(${LIB} PROPERTIES
+   SOVERSION ${SO_MAJOR_VER})
+ 
+ # set install rules
+-set(CMAKE_INSTALL_PREFIX "/usr"
+-  CACHE STRING "Set default installation directory" FORCE)
++if(NOT CMAKE_INSTALL_PREFIX)
++  set(CMAKE_INSTALL_PREFIX
++      "/usr"
++      CACHE STRING "Set default installation directory" FORCE)
++endif()
+ install(TARGETS ${LIB} DESTINATION lib)
+-install(FILES ${IMB_HDR} DESTINATION include)
++install(FILES ${IMB_HDR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/libipsec-mb.7
+               ${CMAKE_CURRENT_SOURCE_DIR}/libipsec-mb-dev.7
+-              DESTINATION man/man7)
++              DESTINATION ${CMAKE_INSTALL_MANDIR}/man7)
+ 
+-- 
+2.44.1
+
