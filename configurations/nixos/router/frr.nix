@@ -26,7 +26,7 @@ in
        ip ospf bfd profile wireguard
        ip ospf network point-to-point
        ip ospf6 area 1.1.1.1
-       ip ospf6 cost 1
+       ip ospf6 cost 30
        ip ospf6 bfd
        ip ospf6 bfd profile wireguard
       exit
@@ -64,12 +64,18 @@ in
         !
         address-family ipv6 unicast
           network !!PREFIX!!::/48
-          neighbor 2605:4840:ffff::179 activate 
+          neighbor 2605:4840:ffff::179 activate
+          neighbor 2605:4840:ffff::179 route-map prepend out
         exit-address-family
       exit
       !
       route-map hosthatch permit 1
        match ip address prefix-list hosthatch
+      exit
+      !
+      route-map prepend permit 1
+       set as-path prepend !!ASN!! !!ASN!!
+       set community 63473:2090 additive
       exit
       !
       bfd
