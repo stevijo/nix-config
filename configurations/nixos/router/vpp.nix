@@ -39,7 +39,7 @@ in
             };
             no-multi-seg = true;
             no-tx-checksum-offload = true;
-            vdev = "crypto_aesni_mb";
+            vdev = "cryptodev_aesni_mb_pmd";
           };
           cpu = {
             main-core = 0;
@@ -55,7 +55,9 @@ in
             "igmp_plugin.so".disable = true;
             "arping_plugin.so".disable = true;
             "ikev2_plugin.so".disable = true;
+            "crypto_ipsecmb_plugin.so".enable = true;
             "crypto_native_plugin.so".disable = true;
+            "crypto_openssl_plugin.so".disable = true;
           };
         };
         startupConfig = ''
@@ -87,13 +89,10 @@ in
           lcp create gre0 host-if wg0 tun
           set int ip address gre0 10.11.0.1/24
           set int state gre0 up
-          set int mtu packet 1414 gre0
-          set int tcp-mss-clamp gre0 ip4 enable ip4-mss 1374 ip6 disable
+          set int mtu packet 1400 gre0
+          set int tcp-mss-clamp gre0 ip4 enable ip4-mss 1360 ip6 disable
           ip route add 224.0.0.5/32 via gre0
           ip route add ff02::5/128 via gre0
-
-          set ipsec async mode on
-          set crypto async dispatch mode polling
 
           create gre tunnel src !!ROUTER-IP!! dst !!REMOTE-MASTERMIND!!
           lcp create gre1 host-if wg1 tun

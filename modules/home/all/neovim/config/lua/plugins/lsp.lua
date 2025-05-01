@@ -42,6 +42,8 @@ return {
                     'ruff',
                     'pyright',
                     'angularls',
+                    'ts_ls',
+                    'eslint',
                 },
             })
 
@@ -72,9 +74,16 @@ return {
 
             }
 
+            require('lspconfig').ts_ls.setup {
+
+            }
+
+            require('lspconfig').eslint.setup {
+
+            }
 
             require('lspconfig').volar.setup {
-                filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+                filetypes = { 'vue' },
                 init_options = {
                     vue = {
                         hybridMode = false,

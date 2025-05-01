@@ -1,6 +1,5 @@
 { stdenv
 , fetchFromGitHub
-, cmake
 , nasm
 }:
 
@@ -15,18 +14,20 @@ stdenv.mkDerivation rec {
     hash = "sha256-wp5hruEBKLu536/m2ep1OjpSQjBUz1Tv5nbmTJodTYc=";
   };
 
-  patches = [
-    ./0001-make-install-dir-configurable.patch
-  ];
-
   outputs = [
     "out"
     "dev"
   ];
 
+  makeFlags = [
+    "PREFIX=$(out)"
+    "SHARED=${if stdenv.hostPlatform.isStatic then "n" else "y"}"
+    "NOLDCONFIG=y"
+  ];
+
   nativeBuildInputs = [
-    cmake
     nasm
   ];
+
 
 }
