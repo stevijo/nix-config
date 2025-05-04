@@ -15,6 +15,9 @@ return {
         config = function()
             local cmp = require('cmp')
             local cmp_lsp = require("cmp_nvim_lsp")
+            local mason_registry = require("mason-registry")
+            local vue_language_server_path = mason_registry.get_package("vue-language-server"):get_install_path()
+                .. "/node_modules/@vue/language-server"
             local capabilities = vim.tbl_deep_extend(
                 "force",
                 {},
@@ -44,8 +47,23 @@ return {
                     'angularls',
                     'ts_ls',
                     'eslint',
+                    'cssls',
+                    'cssmodules_ls',
+                    'emmet_ls',
                 },
             })
+
+            require('lspconfig').cssls.setup {
+
+            }
+
+            require('lspconfig').emmet_ls.setup {
+
+            }
+
+            require('lspconfig').cssmodules_ls.setup {
+
+            }
 
             require('lspconfig').nil_ls.setup {
                 settings = {
@@ -75,7 +93,20 @@ return {
             }
 
             require('lspconfig').ts_ls.setup {
+                filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
+                init_options = {
+                    plugins = {
+                        {
+                            name = "@vue/typescript-plugin",
+                            location = vue_language_server_path,
+                            languages = { "vue" },
+                        },
+                    },
+                },
+            }
 
+            require('lspconfig').angularls.setup {
+                filetypes = { "htmlangular" }
             }
 
             require('lspconfig').eslint.setup {
@@ -83,10 +114,12 @@ return {
             }
 
             require('lspconfig').volar.setup {
-                filetypes = { 'vue' },
                 init_options = {
                     vue = {
-                        hybridMode = false,
+                        hybridMode = true,
+                    },
+                    typescript = {
+                        tsdk = vim.fn.stdpath "data" .. "/mason/packages/vue-language-server/node_modules/typescript/lib",
                     },
                 },
             }
@@ -97,6 +130,14 @@ return {
                         yamlls = {
                             path = "yaml-language-server",
                         }
+                    }
+                }
+            })
+
+            require('lspconfig').tailwindcss.setup({
+                settings = {
+                    tailwindCSS = {
+                        classAttributes = { "class", "className", "ngClass" }
                     }
                 }
             })
