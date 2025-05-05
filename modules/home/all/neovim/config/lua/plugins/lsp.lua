@@ -15,9 +15,6 @@ return {
         config = function()
             local cmp = require('cmp')
             local cmp_lsp = require("cmp_nvim_lsp")
-            local mason_registry = require("mason-registry")
-            local vue_language_server_path = mason_registry.get_package("vue-language-server"):get_install_path()
-                .. "/node_modules/@vue/language-server"
             local capabilities = vim.tbl_deep_extend(
                 "force",
                 {},
@@ -52,6 +49,10 @@ return {
                     'emmet_ls',
                 },
             })
+
+            local mason_registry = require("mason-registry")
+            local vue_language_server_path = mason_registry.get_package("vue-language-server"):get_install_path()
+                .. "/node_modules/@vue/language-server"
 
             require('lspconfig').cssls.setup {
 
