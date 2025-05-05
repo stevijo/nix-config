@@ -95,6 +95,7 @@ in
       texmaker
       texliveFull
       prismlauncher
+      gcc
       update-script
     ];
 

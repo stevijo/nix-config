@@ -8,7 +8,6 @@ in
     yaml-language-server
     helm-ls
     luarocks
-    gcc
     lua5_1
     unzip
     rustc
