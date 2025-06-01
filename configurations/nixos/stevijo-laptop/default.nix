@@ -53,13 +53,13 @@ in
         Address = 172.30.0.5/24
         Address = !!PREFIX!!:dead::5/64
         DNS = 192.168.178.1
-        MTU = 1354
+        MTU = 1340
         PrivateKey = !!WG0!!
         [Peer]
         PublicKey = 3ToM7Pg2tvAalsORya45gR0TS2wHSo7E5Mx7om0QISE=
         Endpoint = router:51820
         PersistentKeepalive = 60
-        AllowedIPs = 192.168.178.0/24, 192.168.2.0/24
+        AllowedIPs = 192.168.178.0/24, 192.168.2.0/24, 10.72.36.0/24
       '');
     };
   };
@@ -173,6 +173,11 @@ in
   services.fstrim.enable = true;
 
   hardware.ledger.enable = true;
+
+  programs.wireshark = {
+    enable = true;
+    package = pkgs.wireshark-qt;
+  };
 
   users.users.stevijo = {
     extraGroups = [ "video" "docker" "adbusers" "wireshark" "dialout" ];

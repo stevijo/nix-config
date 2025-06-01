@@ -39,7 +39,6 @@ in
             };
             no-multi-seg = true;
             no-tx-checksum-offload = true;
-            vdev = "cryptodev_aesni_mb_pmd";
           };
           cpu = {
             main-core = 0;
@@ -55,9 +54,6 @@ in
             "igmp_plugin.so".disable = true;
             "arping_plugin.so".disable = true;
             "ikev2_plugin.so".disable = true;
-            "crypto_ipsecmb_plugin.so".enable = true;
-            "crypto_native_plugin.so".disable = true;
-            "crypto_openssl_plugin.so".disable = true;
           };
         };
         startupConfig = ''

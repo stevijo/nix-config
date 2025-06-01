@@ -1,7 +1,7 @@
-From cf18e4ef5e318c549886a8b367afc06e8514d914 Mon Sep 17 00:00:00 2001
+From ab5bfcba407af342e79d056942d45c41415c2140 Mon Sep 17 00:00:00 2001
 From: Stefan Mayer <stevijo.mayer@googlemail.com>
 Date: Sat, 4 Jan 2025 14:15:04 +0100
-Subject: [PATCH] fix dispatch trace
+Subject: [PATCH 1/2] fix dispatch trace
 
 ---
  plugins/dispatch-trace/main.c | 2 +-

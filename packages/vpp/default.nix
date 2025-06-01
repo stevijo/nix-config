@@ -6,7 +6,7 @@ vpp.overrideAttrs (old: {
     pkgsStatic.intel-ipsec-mb
   ];
   patches = [
-    ./0001-ipsec-fix-UDP-flow-in-ipsec-inbound-policy.patch
     ./0001-fix-dispatch-trace.patch
+    ./0002-fix-ike-packages-not-forwarded-to-linux.patch
   ];
 })

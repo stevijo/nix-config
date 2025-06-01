@@ -13,7 +13,7 @@ in
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     enableCompletion = true;
-    initExtra = ''
+    initContent = ''
       source <(kubectl completion zsh)
       source <(k9s completion zsh)
     '';
