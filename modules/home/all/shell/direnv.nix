@@ -6,6 +6,11 @@ in
 {
   programs.direnv = {
     enable = true;
+    config = {
+      global = {
+        log_filter = "^$"; 
+      };
+    };
     nix-direnv.enable = true;
   };
   home.sessionVariables = {
