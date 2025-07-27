@@ -14,7 +14,7 @@ update:
 # Lint nix files
 [group('dev')]
 lint:
-  nix fmt
+  nix fmt -- .
 
 # Manually enter dev shell
 [group('dev')]
