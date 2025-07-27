@@ -197,6 +197,14 @@ in
   powerManagement.enable = true;
   services.thermald.enable = true;
 
+  services.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+  };
 
   users.users.stevijo = {
     extraGroups = [ "video" "docker" "adbusers" "wireshark" "dialout" ];
