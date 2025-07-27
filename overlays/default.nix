@@ -17,8 +17,6 @@ in
 rec {
   inherit (unstable)
     neovim-unwrapped
-    azure-cli
-    azure-cli-extensions
     nerd-fonts;
   vpp-sswan = self.callPackage "${packages}/vpp-sswan" { inherit (super) strongswan; };
   strongswan = strongswan'.withPlugins [
