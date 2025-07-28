@@ -14,6 +14,8 @@ in
     cargo
     go
     gnumake
+    temurin-bin
+    maven
   ];
   programs.neovim = {
     enable = true;
@@ -38,6 +40,8 @@ in
     ];
     extraLuaConfig = ''
       require("stevijo")
+
+      vim.g.javapath = "${pkgs.temurin-bin}"
     '';
   };
 

@@ -20,7 +20,7 @@ return {
                         runtimes = {
                             {
                                 name = "JavaSE-21",
-                                path = "/usr/lib/jvm/temurin-21-jdk-amd64",
+                                path = vim.g.javapath,
                                 default = true,
                             }
                         }
