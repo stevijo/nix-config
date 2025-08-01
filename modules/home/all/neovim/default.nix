@@ -16,6 +16,7 @@ in
     gnumake
     temurin-bin
     maven
+    nodejs_24
   ];
   programs.neovim = {
     enable = true;

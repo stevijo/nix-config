@@ -1,9 +1,13 @@
 return {
-    "nvim-java/nvim-java",
+    "nvim-java/nvim-java", 
+    version = "^2.0.0",
     config = function()
         require('java').setup({
             jdk = {
                 auto_install = false
+            },
+            java_debug_adapter = {
+                version = '0.58.2'
             }
         })
 

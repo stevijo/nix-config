@@ -16,6 +16,7 @@ let
 in
 rec {
   inherit (unstable)
+    kitty
     neovim-unwrapped
     nerd-fonts;
   vpp-sswan = self.callPackage "${packages}/vpp-sswan" { inherit (super) strongswan; };
