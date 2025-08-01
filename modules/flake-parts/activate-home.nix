@@ -9,7 +9,7 @@
           text = ''
             set -e
             exit_code=0
-            grep NAME=NixOS /etc/os-release || exit_code=$?
+            grep NAME=NixOS /etc/os-release 2> /dev/null || exit_code=$?
             if [[ $exit_code -eq 0 || $# -ne 0 ]]; then
               ${lib.getExe self'.packages.activate} "$@";
             else
