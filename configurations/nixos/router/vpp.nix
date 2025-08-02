@@ -28,22 +28,6 @@ in
       main = {
         enable = true;
         settings = {
-          dpdk = {
-            dev = {
-              default = {
-                num-tx-queues = 2;
-                num-rx-queues = 2;
-                num-rx-desc = 512;
-                num-tx-desc = 512;
-              };
-            };
-            no-multi-seg = true;
-            no-tx-checksum-offload = true;
-          };
-          cpu = {
-            main-core = 0;
-            workers = 3;
-          };
           api-segment = {
             prefix = false;
           };
@@ -57,46 +41,35 @@ in
           };
         };
         startupConfig = ''
-          define ETH0 GigabitEthernet1/0/0
-          define ETH1 GigabitEthernet2/0/0
+          define ETH0 GigabitEthernet6/12/0
+          define ETH1 GigabitEthernet6/13/0
 
           lcp lcp-sync on
           lcp lcp-auto-subint on
 
           lcp create $(ETH0) host-if e0
-          lcp create $(ETH1) host-if e1
 
-          set int ip address $(ETH0) !!ROUTER-IP!!/24
-          set int ip address $(ETH0) !!ROUTER-IP6!!/64
-          set int ip address $(ETH0) !!PREFIX!!::1/128 
           set int state $(ETH0) up
+          set int ip address $(ETH0) 10.32.32.5/24
 
-          set int ip address $(ETH1) 10.32.32.2/24
-          set int state $(ETH1) up
-
-          comment { "Internal ipsec connection" }
           loopback create
           set int state loop0 up
-          set int ip address loop0 10.12.0.1/24
-          set int ip address loop0 192.168.178.30/32
-          set ip neighbor loop0 10.12.0.2 24:6e:96:9c:e5:de
+          set int ip address loop0 10.12.0.2/31
+          set ip neighbor loop0 10.12.0.3 24:6e:96:9c:e5:de
 
-          create gre tunnel src 10.12.0.1 dst 10.12.0.2
-          lcp create gre0 host-if wg0 tun
-          set int ip address gre0 10.11.0.1/24
+          create gre tunnel src 10.12.0.2 dst 10.12.0.3
           set int state gre0 up
           set int mtu packet 1400 gre0
+          set int ip address gre0 10.14.0.0/24
           set int tcp-mss-clamp gre0 ip4 enable ip4-mss 1360 ip6 disable
           ip route add 224.0.0.5/32 via gre0
           ip route add ff02::5/128 via gre0
+        
+          set int state $(ETH1) up
+          enable ip4 interface $(ETH1)
 
-          create gre tunnel src !!ROUTER-IP!! dst !!REMOTE-MASTERMIND!!
-          lcp create gre1 host-if wg1 tun
-          set int state gre1 up
-          set int mtu packet 1420 gre1
-          ip route add ff02::5/128 via gre1
-
-          cnat translation add proto UDP real !!ROUTER-IP!! 51820 to ->192.168.178.5 51820
+          set ip neighbor $(ETH1) 10.14.0.1 bc:24:11:e1:01:93
+          ip route add 10.14.0.1/32 via $(ETH1)
         '';
       };
     };

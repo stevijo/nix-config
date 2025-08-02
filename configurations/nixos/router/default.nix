@@ -23,19 +23,9 @@ in
     "/home/stevijo/.ssh/id_ed25519"
   ];
   sops.secrets.ikev2-password = { };
-  sops.secrets.ikev2-new = { };
   sops.secrets.ikev-fritz = { };
   sops.secrets.remote-fritz = { };
   sops.secrets.remote-local = { };
-  sops.secrets.private-remote = { };
-  sops.secrets.router-ip = { };
-  sops.secrets.router-ip6 = { };
-  sops.secrets.router-gateway = { };
-  sops.secrets.remote-mastermind = { };
-  sops.secrets.remote = { };
-  sops.secrets.prefix = { };
-  sops.secrets.bgp-password = { };
-  sops.secrets.asn = { };
 
   environment.systemPackages = with pkgs; [
     git

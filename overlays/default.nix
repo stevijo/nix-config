@@ -25,5 +25,4 @@ rec {
   ];
   vpp = self.callPackage "${packages}/vpp" { inherit (super) vpp; };
   intel-ipsec-mb = self.callPackage "${packages}/intel-ipsec-mb" { };
-  dpdk = self.callPackage "${packages}/dpdk" { inherit (super) dpdk; };
 }

@@ -16,11 +16,16 @@ in
     path = with pkgs; [
       bintools
     ];
+    serviceConfig = {
+      ExecStartPre = "${pkgs.coreutils}/bin/sleep 10";
+    };
     requires = [
       "vpp-main.service"
+      "frr.service"
     ];
     after = [
       "vpp-main.service"
+      "frr.service"
     ];
   };
   services.strongswan-swanctl = {
@@ -53,7 +58,7 @@ in
           dpd_delay = "30";
           dpd_timeout = "120";
           local_addrs = [
-            "!!ROUTER-IP!!"
+            "10.32.32.5"
           ];
           local = {
             vpp = {
@@ -73,40 +78,8 @@ in
                 "aes256gcm128-sha256-modp2048"
               ];
               mode = "tunnel";
-              local_ts = [ "10.12.0.1/32" ];
-              remote_ts = [ "10.12.0.2/32" ];
-              start_action = "start";
-            };
-          };
-        };
-        mastermind = {
-          proposals = [
-            "aes256-sha256-modp2048"
-          ];
-          version = 2;
-          local_addrs = [
-            "!!ROUTER-IP!!"
-          ];
-          local = {
-            vpp = {
-              id = "!!ROUTER-IP!!";
-              auth = "psk";
-            };
-          };
-          remote = {
-            vyos = {
-              id = "!!REMOTE-MASTERMIND!!";
-              auth = "psk";
-            };
-          };
-          children = {
-            tunnel = {
-              esp_proposals = [
-                "aes256gcm128-sha256-modp2048"
-              ];
-              mode = "tunnel";
-              local_ts = [ "!!ROUTER-IP!!/32" ];
-              remote_ts = [ "!!REMOTE-MASTERMIND!!/32" ];
+              local_ts = [ "10.12.0.2/32" ];
+              remote_ts = [ "10.12.0.3/32" ];
               start_action = "start";
             };
           };
@@ -116,7 +89,7 @@ in
             "aes256-sha512-modp1024"
           ];
           local_addrs = [
-            "!!ROUTER-IP!!"
+            "10.32.32.5"
           ];
           local = {
             vpp = {
@@ -146,13 +119,6 @@ in
       };
       secrets = {
         ike = {
-          mastermind = {
-            id = {
-              "1" = "!!ROUTER-IP!!";
-              "2" = "!!REMOTE-MASTERMIND!!";
-            };
-            secret = "!!IPSEC-MASTERMIND!!";
-          };
           vyos = {
             id = {
               "1" = "vyos";

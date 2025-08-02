@@ -1,0 +1,41 @@
+From db68a6211d75e373451312b2ae0e12bea91694d6 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Beno=C3=AEt=20Ganne?= <bganne@cisco.com>
+Date: Tue, 29 Apr 2025 15:09:27 +0200
+Subject: [PATCH 3/3] fib: fix adj_get_rewrite()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+It looks like this bug has been around forever: initially the rewrite
+string was at the end of rw->data, so the correct thing to do would have
+been to return rw->data + max_size - rw->data_size.
+Then we moved the rewrite string at the beginning of the buffer, so we
+should always return rw->data.
+In any case, rw->data - rw->data_size is clearly wrong and will access
+memory in the rewrite header or before it.
+
+Type: fix
+Fixes: b80c536e34b610ca77cd84448754e4bd9c46cf68
+
+Change-Id: Ib6d1124776a3c20e718fc46d61190dec7cba31c3
+Signed-off-by: Benoît Ganne <bganne@cisco.com>
+---
+ vnet/adj/adj.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/vnet/adj/adj.c b/src/vnet/adj/adj.c
+index 201561fe4..7a2e618d1 100644
+--- a/vnet/adj/adj.c
++++ b/vnet/adj/adj.c
+@@ -572,7 +572,7 @@ adj_get_rewrite (adj_index_t ai)
+ 
+     ASSERT (rw->data_bytes != 0xfefe);
+ 
+-    return (rw->data - rw->data_bytes);
++    return rw->data;
+ }
+ 
+ static fib_node_t *
+-- 
+2.44.1
+

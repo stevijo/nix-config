@@ -12,9 +12,8 @@
     ];
 
   # Bootloader.
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/vda";
-  boot.loader.grub.useOSProber = true;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "router"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -27,21 +26,21 @@
   # networking.networkmanager.enable = true;
 
   # Set your time zone.
-  time.timeZone = "Europe/Vienna";
+  time.timeZone = "Europe/Prague";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.extraLocaleSettings = {
-    LC_ADDRESS = "de_AT.UTF-8";
-    LC_IDENTIFICATION = "de_AT.UTF-8";
-    LC_MEASUREMENT = "de_AT.UTF-8";
-    LC_MONETARY = "de_AT.UTF-8";
-    LC_NAME = "de_AT.UTF-8";
-    LC_NUMERIC = "de_AT.UTF-8";
-    LC_PAPER = "de_AT.UTF-8";
-    LC_TELEPHONE = "de_AT.UTF-8";
-    LC_TIME = "de_AT.UTF-8";
+    LC_ADDRESS = "en_US.UTF-8";
+    LC_IDENTIFICATION = "en_US.UTF-8";
+    LC_MEASUREMENT = "en_US.UTF-8";
+    LC_MONETARY = "en_US.UTF-8";
+    LC_NAME = "en_US.UTF-8";
+    LC_NUMERIC = "en_US.UTF-8";
+    LC_PAPER = "en_US.UTF-8";
+    LC_TELEPHONE = "en_US.UTF-8";
+    LC_TIME = "en_US.UTF-8";
   };
 
   # Configure keymap in X11
@@ -93,6 +92,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.05"; # Did you read the comment?
+  system.stateVersion = "25.05"; # Did you read the comment?
 
 }

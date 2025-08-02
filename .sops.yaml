@@ -2,6 +2,7 @@ keys:
   - &main age1kll664z2p52xrfm4rfxcn0wrtk4xwrue827skz2zqy96uzmanvfq3jyzhj
   - &laptop age1d4pc9jlwda0d40d0ud0dmch5akfu3srvr5y0uldmjzfg9y9344ts5xhmjx
   - &work age14gxlgx2pw89e233rjgvw6yjlwldyegldk9j3k0xxqd7gvkq43apsmre7gs
+  - &router age19w5s8jcfzyxdt262vthc49unslhes86wfyz783qv84wnjaslfa4sdsfxes
 creation_rules:
   - path_regex: secrets.yaml$
     key_groups:
@@ -9,3 +10,4 @@ creation_rules:
         - *main
         - *laptop
         - *work
+        - *router
