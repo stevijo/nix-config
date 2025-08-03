@@ -57,19 +57,15 @@ in
           set int ip address loop0 10.12.0.2/31
           set ip neighbor loop0 10.12.0.3 24:6e:96:9c:e5:de
 
-          create gre tunnel src 10.12.0.2 dst 10.12.0.3
+          create gre tunnel src 10.12.0.2 dst 10.12.0.3 teb
           set int state gre0 up
-          set int mtu packet 1400 gre0
-          set int ip address gre0 10.14.0.0/24
+          set int mtu packet 1414 gre0
           set int tcp-mss-clamp gre0 ip4 enable ip4-mss 1360 ip6 disable
-          ip route add 224.0.0.5/32 via gre0
-          ip route add ff02::5/128 via gre0
         
           set int state $(ETH1) up
-          enable ip4 interface $(ETH1)
 
-          set ip neighbor $(ETH1) 10.14.0.1 bc:24:11:e1:01:93
-          ip route add 10.14.0.1/32 via $(ETH1)
+          set interface l2 bridge $(ETH1) 100
+          set interface l2 bridge gre0 100
         '';
       };
     };
