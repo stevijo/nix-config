@@ -165,9 +165,6 @@ in
   };
   boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.initrd.systemd.enable = true;
-  boot.supportedFilesystems = [ "zfs" ];
-  boot.zfs.allowHibernation = true;
-  boot.zfs.forceImportRoot = false;
   networking.hostId = "2f6bdf89";
   boot.resumeDevice = "/dev/disk/by-uuid/b30200b1-b70d-4832-979e-be2a51413369";
   services.fstrim.enable = true;
@@ -191,7 +188,7 @@ in
       CPU_MIN_PERF_ON_AC = 0;
       CPU_MAX_PERF_ON_AC = 100;
       CPU_MIN_PERF_ON_BAT = 0;
-      CPU_MAX_PERF_ON_BAT = 20;
+      CPU_MAX_PERF_ON_BAT = 70;
     };
   };
   powerManagement.enable = true;
