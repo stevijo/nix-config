@@ -66,6 +66,8 @@ in
 
           set interface l2 bridge $(ETH1) 100
           set interface l2 bridge gre0 100
+
+          set ipsec async mode on
         '';
       };
     };
