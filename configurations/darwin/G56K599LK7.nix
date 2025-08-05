@@ -26,7 +26,10 @@ in
   system.defaults.dock.show-recents = false;
   fonts = {
     packages = with pkgs; [
-       nerd-fonts.droid-sans-mono 
+      nerd-fonts.droid-sans-mono
     ];
   };
+  environment.systemPackages = with pkgs; [
+    kitty
+  ];
 }
