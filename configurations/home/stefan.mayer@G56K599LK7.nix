@@ -11,7 +11,6 @@ in
   ];
 
   home.username = "stefan.mayer";
-  home.homeDirectory = lib.mkDefault "/${if pkgs.stdenv.isDarwin then "Users" else "home"}/stefan.mayer";
   home.stateVersion = "22.11";
 
   programs.zsh = {
