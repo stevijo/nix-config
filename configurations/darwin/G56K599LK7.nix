@@ -17,6 +17,16 @@ in
   };
 
   username = "stefan.mayer";
-  
+
+  security.pam.services.sudo_local.touchIdAuth = true;
+
   system.stateVersion = 6;
+
+  system.primaryUser = "stefan.mayer";
+  system.defaults.dock.show-recents = false;
+  fonts = {
+    packages = with pkgs; [
+       nerd-fonts.droid-sans-mono 
+    ];
+  };
 }

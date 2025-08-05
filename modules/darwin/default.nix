@@ -6,8 +6,10 @@ let
 in
 {
   imports = [
+    inputs.mac-app-util.darwinModules.default
     {
       home-manager.sharedModules = [
+        inputs.mac-app-util.homeManagerModules.default
         self.homeModules.default
         self.homeModules.darwin-only
       ];

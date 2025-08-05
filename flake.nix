@@ -16,6 +16,7 @@
     nixos-unified.url = "github:srid/nixos-unified";
     sops-nix.url = "github:Mic92/sops-nix";
     scalpel.url = "github:polygon/scalpel";
+    mac-app-util.url = "github:hraban/mac-app-util";
 
     # Software inputs
     nix-index-database.url = "github:nix-community/nix-index-database";
