@@ -7,6 +7,7 @@ in
   home.packages = with pkgs; [
     kubectl
     kubelogin
+    kubelogin-oidc
     kubernetes-helm
   ];
 
