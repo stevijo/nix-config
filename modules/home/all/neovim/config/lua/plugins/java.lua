@@ -23,8 +23,8 @@ return {
                     configuration = {
                         runtimes = {
                             {
-                                name = "JavaSE-21",
-                                path = vim.g.javapath,
+                                name = vim.env.JAVA_VERSION,
+                                path = vim.env.JAVA_HOME,
                                 default = true,
                             }
                         }
