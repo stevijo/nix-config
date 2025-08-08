@@ -1,4 +1,4 @@
-{ lib, flake, pkgs, ... }:
+{ flake, pkgs, ... }:
 
 let
   inherit (flake) inputs;
@@ -52,6 +52,7 @@ in
 
     systemPackages = with pkgs; [
       kitty
+      rectangle
     ];
     variables = {
       JAVA_HOME_21 = toString java21;

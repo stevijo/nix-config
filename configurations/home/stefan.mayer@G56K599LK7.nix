@@ -23,5 +23,9 @@ in
     '';
   };
 
+  home.packages = with pkgs; [
+    awscli2
+  ];
+
   programs.kitty.font.size = lib.mkForce 18;
 }
