@@ -1,4 +1,4 @@
-{ config, flake, pkgs, lib, ... }:
+{ system, config, flake, pkgs, lib, ... }:
 
 let
   inherit (flake) inputs;
@@ -59,6 +59,7 @@ in
       extraLuaConfig = ''
         require("stevijo")
 
+        vim.g.palantirformat = "${./palantir-java-format.jar}"
       '';
     };
 
