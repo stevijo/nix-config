@@ -50,14 +50,14 @@ in
           lcp create $(ETH0) host-if e0
 
           set int state $(ETH0) up
-          set int ip address $(ETH0) 10.32.32.5/24
+          set int ip address $(ETH0) 10.13.0.5/31
 
           loopback create
           set int state loop0 up
-          set int ip address loop0 10.12.0.2/31
-          set ip neighbor loop0 10.12.0.3 24:6e:96:9c:e5:de
+          set int ip address loop0 10.12.0.3/31
+          set ip neighbor loop0 10.12.0.2 24:6e:96:9c:e5:de
 
-          create gre tunnel src 10.12.0.2 dst 10.12.0.3 teb
+          create gre tunnel src 10.12.0.3 dst 10.12.0.2 teb
           set int state gre0 up
           set int mtu packet 1414 gre0
         
