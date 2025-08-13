@@ -84,6 +84,9 @@ in
               local_ts = [ "10.12.0.3/32" ];
               remote_ts = [ "10.12.0.2/32" ];
               start_action = "start";
+              dpd_action = "restart";
+              close_action = "start";
+              replay_window = 32;
             };
           };
         };
