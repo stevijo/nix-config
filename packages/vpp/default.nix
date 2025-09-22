@@ -1,9 +1,15 @@
 { vpp
+, keepDebugInfo
+, stdenv
 }:
-vpp.overrideAttrs (old: {
+(vpp.override {
+  # stdenv = keepDebugInfo stdenv;
+}).overrideAttrs (old: {
+  # cmakeFlags = old.cmakeFlags ++ [
+  #   "-D CMAKE_BUILD_TYPE=Debug"
+  # ];
   patches = [
     ./0001-fix-dispatch-trace.patch
     ./0002-fix-ike-packages-not-forwarded-to-linux.patch
-    ./0003-fib-fix-adj_get_rewrite.patch
   ];
 })

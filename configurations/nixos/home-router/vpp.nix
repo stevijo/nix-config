@@ -31,6 +31,7 @@ in
           api-segment = {
             prefix = false;
           };
+          dpdk = { };
           plugins.plugin = {
             "rdma_plugin.so".disable = true;
             "linux_cp_plugin.so".enable = true;

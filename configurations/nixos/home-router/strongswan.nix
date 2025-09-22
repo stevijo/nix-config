@@ -45,6 +45,7 @@ in
             include ${pkgs.strongswan}/share/strongswan/templates/config/plugins/nonce.conf
             include ${pkgs.strongswan}/share/strongswan/templates/config/plugins/socket-default.conf
             include ${pkgs.strongswan}/share/strongswan/templates/config/plugins/vici.conf
+            include ${pkgs.strongswan}/share/strongswan/templates/config/plugins/kdf.conf
           }
       }
     '';

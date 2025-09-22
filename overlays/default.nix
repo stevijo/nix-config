@@ -7,6 +7,7 @@ let
 in
 self: super:
 let
+  inherit (super) stdenvAdapters;
   strongswan' = self.callPackage "${packages}/strongswan" { inherit (super) strongswan; };
   system = super.stdenv.hostPlatform.system or super.system;
   unstable = import inputs.nixpkgs-unstable {
@@ -23,6 +24,13 @@ rec {
   strongswan = strongswan'.withPlugins [
     vpp-sswan
   ];
-  vpp = self.callPackage "${packages}/vpp" { inherit (super) vpp; };
+  dpdk = self.callPackage "${packages}/dpdk" {
+    inherit (super) dpdk;
+    inherit (stdenvAdapters) keepDebugInfo;
+  };
+  vpp = self.callPackage "${packages}/vpp" {
+    inherit (super) vpp;
+    inherit (stdenvAdapters) keepDebugInfo;
+  };
   intel-ipsec-mb = self.callPackage "${packages}/intel-ipsec-mb" { };
 }

@@ -294,49 +294,49 @@ let
                   '';
                 };
 
-                dpdk = {
-                  dev = mkOption {
-                    type = types.attrsOf (
-                      types.submodule {
-                        freeformType = semanticTypes.vppAll;
+                # dpdk = {
+                #   dev = mkOption {
+                #     type = types.attrsOf (
+                #       types.submodule {
+                #         freeformType = semanticTypes.vppAll;
 
-                        options.name = mkOption {
-                          type = types.nullOr types.str;
-                          example = "eth0";
-                          default = null;
-                          description = "Override the name of this interface as seen from the CLI.";
-                        };
-                        options.num-rx-queues = mkOption {
-                          type = types.nullOr types.ints.positive;
-                          example = 4;
-                          default = null;
-                          description = ''
-                            Number of receive queues on this interface. Useful for multi-threaded operation.
-                            Use the `cpu.*` options to setup workers if you want to use this option.
-                          '';
-                        };
-                      }
-                    );
-                    example = {
-                      "0000:01:00.0".name = "eth0";
-                    };
-                    default = { };
-                    description = ''
-                      Which DPDK network interfaces VPP should bind to, can also be specified as a list if no
-                      per-device configuration is needed. Special value `default` applies to all interfaces.
-                    '';
-                  };
+                #         options.name = mkOption {
+                #           type = types.nullOr types.str;
+                #           example = "eth0";
+                #           default = null;
+                #           description = "Override the name of this interface as seen from the CLI.";
+                #         };
+                #         options.num-rx-queues = mkOption {
+                #           type = types.nullOr types.ints.positive;
+                #           example = 4;
+                #           default = null;
+                #           description = ''
+                #             Number of receive queues on this interface. Useful for multi-threaded operation.
+                #             Use the `cpu.*` options to setup workers if you want to use this option.
+                #           '';
+                #         };
+                #       }
+                #     );
+                #     example = {
+                #       "0000:01:00.0".name = "eth0";
+                #     };
+                #     default = { };
+                #     description = ''
+                #       Which DPDK network interfaces VPP should bind to, can also be specified as a list if no
+                #       per-device configuration is needed. Special value `default` applies to all interfaces.
+                #     '';
+                #   };
 
-                  blacklist = mkOption {
-                    type = types.oneOf [
-                      types.str
-                      (types.listOf types.str)
-                    ];
-                    example = "8086:10fb";
-                    default = [ ];
-                    description = "Device types to blacklist, using PCI vendor:device syntax.";
-                  };
-                };
+                #   blacklist = mkOption {
+                #     type = types.oneOf [
+                #       types.str
+                #       (types.listOf types.str)
+                #     ];
+                #     example = "8086:10fb";
+                #     default = [ ];
+                #     description = "Device types to blacklist, using PCI vendor:device syntax.";
+                #   };
+                # };
 
                 cpu = {
                   main-core = mkOption {
@@ -492,9 +492,6 @@ in
               (
                 instance.kernelModule != null
               ) "-/run/current-system/sw/bin/modprobe ${instance.kernelModule}");
-          Environment = [
-            "vpp_use_dpdk_cryptodev=yes"
-          ];
           ExecStart = "${instance.package}/bin/vpp -c ${instance.settingsFile}";
           Type = "simple";
           Restart = "on-failure";
