@@ -25,6 +25,7 @@ in
 
   home.packages = with pkgs; [
     awscli2
+    azure-cli
   ];
 
   programs.kitty.font.size = lib.mkForce 18;
