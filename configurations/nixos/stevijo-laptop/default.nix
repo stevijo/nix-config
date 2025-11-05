@@ -103,6 +103,10 @@ in
     NIXOS_OZONE_WL = 1;
   };
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "mbedtls-2.28.10"
+  ];
+
   fonts.packages = with pkgs; [
     cantarell-fonts
     dejavu_fonts

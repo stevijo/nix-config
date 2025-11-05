@@ -7,7 +7,7 @@
     inputs.nixos-unified.flakeModules.autoWire
   ];
 
-  perSystem = { self', pkgs, system, ... }: {
+  perSystem = { self', pkgs, system, inputs', ... }: {
     # For 'nix fmt'
     formatter = pkgs.nixpkgs-fmt;
 
@@ -21,5 +21,11 @@
         "nix-index-database"
       ];
     };
+
+    packages.no-sudo-activate = self'.packages.activate.overrideAttrs (old: {
+      buildCommand = old.buildCommand + ''
+        ${pkgs.gnused}/bin/sed -i -E 's/(nixos-rebuild.*) --sudo/sudo \1/g' activate.nu;
+      '';
+    });
   };
 }
