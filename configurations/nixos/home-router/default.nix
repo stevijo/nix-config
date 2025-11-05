@@ -58,6 +58,12 @@ in
       ];
     }
   ];
+
+  nixpkgs.config.permittedInsecurePackages = [
+    "mbedtls-2.28.10"
+  ];
+
+
   # Enable home-manager for "stevijo" user
   home-manager.users."stevijo" = {
     imports = [ (self + "/configurations/home/stevijo@stevijo-laptop.nix") ];
