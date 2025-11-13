@@ -19,6 +19,8 @@ rec {
   inherit (unstable)
     kitty
     neovim-unwrapped
+    sway-unwrapped
+    wlroots
     nerd-fonts;
   vpp-sswan = self.callPackage "${packages}/vpp-sswan" { inherit (super) strongswan; };
   strongswan = strongswan'.withPlugins [
