@@ -1,11 +1,17 @@
 # Top-level flake glue to get our configuration working
 { self, inputs, lib, ... }:
 
+let
+  inherit (self.nix-config.lib) forAllNixFiles;
+in
 {
   imports = [
     inputs.nixos-unified.flakeModules.default
     inputs.nixos-unified.flakeModules.autoWire
   ];
+
+  flake.sharedModules =
+    forAllNixFiles "${self}/modules/shared" ({ path, ... }: path);
 
   perSystem = { self', pkgs, system, inputs', ... }: {
     # For 'nix fmt'

@@ -13,6 +13,6 @@ in
         self.homeModules.linux-only
       ];
     }
-    self.nixosModules.common
+    self.sharedModules.default
   ];
 }

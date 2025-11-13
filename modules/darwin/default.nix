@@ -14,6 +14,6 @@ in
         self.homeModules.darwin-only
       ];
     }
-    self.nixosModules.common
+    self.sharedModules.default
   ];
 }
