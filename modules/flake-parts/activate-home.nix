@@ -3,9 +3,10 @@
     let
       default = {
         inherit (self'.packages.activate) meta;
+        type = "app";
         program = pkgs.writeShellApplication {
           name = "activate-home";
-
+          
           text = ''
             set -e
             exit_code=0
