@@ -8,10 +8,13 @@ return {
             },
             java_debug_adapter = {
                 version = '0.58.2'
-            }
+            },
+            java_test = {
+	         	version = '0.43.1'
+	        },
         })
 
-        require('lspconfig').jdtls.setup({
+        vim.lsp.config('jdtls', {
             settings = {
                 java = {
                     codeGeneration = {

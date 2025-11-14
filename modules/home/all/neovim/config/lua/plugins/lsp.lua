@@ -53,25 +53,25 @@ return {
             local vue_language_server_path = vim.fn.expand("$MASON/packages/vue-language-server"
                 .. "/node_modules/@vue/language-server")
 
-            require('lspconfig').cssls.setup {
+            vim.lsp.config('cssls', {
 
-            }
+            })
 
-            require('lspconfig').emmet_ls.setup {
+            vim.lsp.config('emmet_ls', {
 
-            }
+            })
 
-            require('lspconfig').cssmodules_ls.setup {
+            vim.lsp.config('cssmodules_ls', {
 
-            }
+            })
 
-            require('lspconfig').nil_ls.setup {
+            vim.lsp.config('nil_ls', {
                 settings = {
                     ["nil"] = {
                         formatting = { command = { "nixpkgs-fmt" } }
                     },
                 },
-            }
+            })
 
             local on_attach = function(client, bufnr)
                 if client.name == 'ruff' then
@@ -80,19 +80,19 @@ return {
                 end
             end
 
-            require('lspconfig').ruff.setup {
+            vim.lsp.config('ruff', {
                 on_attach = on_attach,
-            }
+            })
 
-            require('lspconfig').pyright.setup {
+            vim.lsp.config('pyright', {
 
-            }
+            })
 
-            require('lspconfig').gopls.setup {
+            vim.lsp.config('gopls', {
 
-            }
+            })
 
-            require('lspconfig').ts_ls.setup {
+            vim.lsp.config('ts_ls', {
                 filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
                 init_options = {
                     plugins = {
@@ -103,17 +103,17 @@ return {
                         },
                     },
                 },
-            }
+            })
 
-            require('lspconfig').angularls.setup {
+            vim.lsp.config('angularls', {
                 filetypes = { "htmlangular" }
-            }
+            })
 
-            require('lspconfig').eslint.setup {
+            vim.lsp.config('eslint', {
 
-            }
+            })
 
-            require('lspconfig').volar.setup {
+            vim.lsp.config('volar', {
                 init_options = {
                     vue = {
                         hybridMode = true,
@@ -122,9 +122,9 @@ return {
                         tsdk = vim.fn.stdpath "data" .. "/mason/packages/vue-language-server/node_modules/typescript/lib",
                     },
                 },
-            }
+            })
 
-            require('lspconfig').helm_ls.setup({
+            vim.lsp.config('helm_ls', {
                 settings = {
                     ['helm-ls'] = {
                         yamlls = {
@@ -134,13 +134,15 @@ return {
                 }
             })
 
-            require('lspconfig').tailwindcss.setup({
+            vim.lsp.config('tailwindcss', {
                 settings = {
                     tailwindCSS = {
                         classAttributes = { "class", "className", "ngClass" }
                     }
                 }
             })
+
+            vim.lsp.enable({ 'cssls', 'emmet_ls', 'cssmodules_ls', 'nil_ls', 'ruff', 'pyright', 'gopls', 'ts_ls', 'angularls', 'eslint', 'volar', 'helm_ls', 'tailwindcss' })
 
             local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
