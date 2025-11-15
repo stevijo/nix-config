@@ -1,27 +1,28 @@
 return {
     {
-        "neovim/nvim-lspconfig",
+        'neovim/nvim-lspconfig',
+        commit = '5bfcc89fd155b4ffc02d18ab3b7d19c2d4e246a7',
         dependencies = {
-            "williamboman/mason.nvim",
-            "williamboman/mason-lspconfig.nvim",
-            "hrsh7th/cmp-nvim-lsp",
-            "hrsh7th/cmp-buffer",
-            "hrsh7th/cmp-path",
-            "hrsh7th/cmp-cmdline",
-            "hrsh7th/nvim-cmp",
-            "j-hui/fidget.nvim",
+            'williamboman/mason.nvim',
+            'williamboman/mason-lspconfig.nvim',
+            'hrsh7th/cmp-nvim-lsp',
+            'hrsh7th/cmp-buffer',
+            'hrsh7th/cmp-path',
+            'hrsh7th/cmp-cmdline',
+            'hrsh7th/nvim-cmp',
+            'j-hui/fidget.nvim',
         },
 
         config = function()
             local cmp = require('cmp')
-            local cmp_lsp = require("cmp_nvim_lsp")
+            local cmp_lsp = require('cmp_nvim_lsp')
             local capabilities = vim.tbl_deep_extend(
-                "force",
+                'force',
                 {},
                 vim.lsp.protocol.make_client_capabilities(),
                 cmp_lsp.default_capabilities())
 
-            require("fidget").setup({})
+            require('fidget').setup({})
             require('mason').setup({
                 registries = {
                     'github:nvim-java/mason-registry',
@@ -50,25 +51,20 @@ return {
                 },
             })
 
-            local vue_language_server_path = vim.fn.expand("$MASON/packages/vue-language-server"
-                .. "/node_modules/@vue/language-server")
+            local vue_language_server_path = vim.fn.expand('$MASON/packages/vue-language-server'
+                .. '/node_modules/@vue/language-server')
 
-            vim.lsp.config('cssls', {
-
-            })
-
-            vim.lsp.config('emmet_ls', {
-
-            })
-
-            vim.lsp.config('cssmodules_ls', {
-
-            })
+            local vue_plugin = {
+                name = '@vue/typescript-plugin',
+                location = vue_language_server_path,
+                languages = { 'vue' },
+                configNamespace = 'typescript',
+            }
 
             vim.lsp.config('nil_ls', {
                 settings = {
-                    ["nil"] = {
-                        formatting = { command = { "nixpkgs-fmt" } }
+                    ['nil'] = {
+                        formatting = { command = { 'nixpkgs-fmt' } }
                     },
                 },
             })
@@ -84,51 +80,24 @@ return {
                 on_attach = on_attach,
             })
 
-            vim.lsp.config('pyright', {
-
-            })
-
-            vim.lsp.config('gopls', {
-
-            })
-
             vim.lsp.config('ts_ls', {
-                filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
+                filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
                 init_options = {
                     plugins = {
-                        {
-                            name = "@vue/typescript-plugin",
-                            location = vue_language_server_path,
-                            languages = { "vue" },
-                        },
+                        vue_plugin,
                     },
                 },
             })
 
             vim.lsp.config('angularls', {
-                filetypes = { "htmlangular" }
-            })
-
-            vim.lsp.config('eslint', {
-
-            })
-
-            vim.lsp.config('volar', {
-                init_options = {
-                    vue = {
-                        hybridMode = true,
-                    },
-                    typescript = {
-                        tsdk = vim.fn.stdpath "data" .. "/mason/packages/vue-language-server/node_modules/typescript/lib",
-                    },
-                },
+                filetypes = { 'htmlangular' }
             })
 
             vim.lsp.config('helm_ls', {
                 settings = {
                     ['helm-ls'] = {
                         yamlls = {
-                            path = "yaml-language-server",
+                            path = 'yaml-language-server',
                         }
                     }
                 }
@@ -137,12 +106,12 @@ return {
             vim.lsp.config('tailwindcss', {
                 settings = {
                     tailwindCSS = {
-                        classAttributes = { "class", "className", "ngClass" }
+                        classAttributes = { 'class', 'className', 'ngClass' }
                     }
                 }
             })
 
-            vim.lsp.enable({ 'cssls', 'emmet_ls', 'cssmodules_ls', 'nil_ls', 'ruff', 'pyright', 'gopls', 'ts_ls', 'angularls', 'eslint', 'volar', 'helm_ls', 'tailwindcss' })
+            vim.lsp.enable({ 'cssls', 'emmet_ls', 'cssmodules_ls', 'nil_ls', 'ruff', 'pyright', 'gopls', 'ts_ls', 'angularls', 'eslint', 'vue_ls', 'helm_ls', 'tailwindcss' })
 
             local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
@@ -153,7 +122,7 @@ return {
                     ['<C-k>'] = cmp.mapping.select_prev_item(cmp_select),
                     ['<C-j>'] = cmp.mapping.select_next_item(cmp_select),
                     ['<C-space>'] = cmp.mapping.confirm({ select = true }),
-                    ["<C-z>"] = cmp.mapping.complete(),
+                    ['<C-z>'] = cmp.mapping.complete(),
                 }),
                 sources = cmp.config.sources({
                     { name = 'nvim_lsp' },
@@ -167,11 +136,11 @@ return {
                 -- update_in_insert = true,
                 float = {
                     focusable = false,
-                    style = "minimal",
-                    border = "rounded",
-                    source = "always",
-                    header = "",
-                    prefix = "",
+                    style = 'minimal',
+                    border = 'rounded',
+                    source = 'always',
+                    header = '',
+                    prefix = '',
                 },
             })
         end,
