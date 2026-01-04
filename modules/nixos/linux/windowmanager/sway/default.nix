@@ -36,8 +36,8 @@ in
         set $Locker ~/.config/sway/scripts/lock-screen
         # Workspace naming
         set $ws1 "1 "
-        set $ws2 "2 " 
-        set $ws3 "3 "
+        set $ws2 "2  " 
+        set $ws3 "3  "
         set $ws4 "4 "
         set $ws5 "5 "
         set $ws6 "6 "
