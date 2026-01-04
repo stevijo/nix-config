@@ -103,10 +103,6 @@ in
     NIXOS_OZONE_WL = 1;
   };
 
-  nixpkgs.config.permittedInsecurePackages = [
-    "mbedtls-2.28.10"
-  ];
-
   fonts.packages = with pkgs; [
     cantarell-fonts
     dejavu_fonts
@@ -127,9 +123,6 @@ in
   hardware.i2c.enable = true;
 
   services.fwupd.enable = true;
-  services.udev.packages = with pkgs; [
-    android-udev-rules
-  ];
 
   systemd.services.lock = {
     enable = true;
@@ -151,7 +144,7 @@ in
   systemd.sleep.extraConfig = ''
     HibernateDelaySec=30m
   '';
-  services.logind.lidSwitch = "suspend-then-hibernate";
+  services.logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
   home-manager.sharedModules = [{
     wayland.windowManager.sway.config.output = {
       "eDP-1" = {

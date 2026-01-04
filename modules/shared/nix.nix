@@ -36,6 +36,7 @@ in
         # Nullify the registry for purity.
         flake-registry = builtins.toFile "empty-flake-registry.json" ''{"flakes":[],"version":2}'';
         trusted-users = [ "root" (if pkgs.stdenv.isDarwin then username else "@wheel") ];
+        download-buffer-size = 524288000;
       };
     };
 

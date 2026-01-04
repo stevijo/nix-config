@@ -6,7 +6,7 @@ in
 {
   programs.rofi = {
     enable = true;
-    package = pkgs.rofi-wayland;
+    package = pkgs.rofi;
     extraConfig = {
       font = "DroidSansM Nerd Font 12";
       display-drun = " ";

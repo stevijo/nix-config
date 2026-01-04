@@ -2,9 +2,11 @@
 , symlinkJoin
 , makeWrapper
 , strongswan
+, python3
 }:
 let
   patchedStrongswan = strongswan.overrideAttrs (old: {
+    buildInputs = old.buildInputs ++ [ python3 ];
     configureFlags = old.configureFlags ++ [
       "--enable-libipsec"
     ];

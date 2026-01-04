@@ -1,0 +1,26 @@
+From 3d8b6803a1ee34972b6b226582256f4456429dfc Mon Sep 17 00:00:00 2001
+From: Stefan Mayer <stevijo.mayer@googlemail.com>
+Date: Sun, 4 Jan 2026 14:42:22 +0100
+Subject: [PATCH 3/3] strongswan: add plugin version
+
+---
+ .../strongswan/vpp_sswan/kernel_vpp_plugin.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/kernel_vpp_plugin.c b/kernel_vpp_plugin.c
+index 9791987f5..428adacec 100644
+--- a/kernel_vpp_plugin.c
++++ b/kernel_vpp_plugin.c
+@@ -75,8 +75,7 @@ METHOD (plugin_t, destroy, void, private_kernel_vpp_plugin_t *this)
+   free (this);
+ }
+ 
+-plugin_t *
+-kernel_vpp_plugin_create ()
++PLUGIN_DEFINE(kernel_vpp)
+ {
+   private_kernel_vpp_plugin_t *this;
+ 
+-- 
+2.44.1
+

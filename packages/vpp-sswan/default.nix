@@ -25,6 +25,7 @@ stdenv.mkDerivation {
   patches = [
     ./0001-strongswan-add-bypass-rule-for-ipv6-and-add-policy-t.patch
     ./0002-strongswan-enable-sa-update.patch
+    ./0003-strongswan-add-plugin-version.patch
   ];
 
   buildInputs = [ vpp systemd.dev ];
