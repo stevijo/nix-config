@@ -36,7 +36,7 @@ return {
                     'lua_ls',
                     'rust_analyzer',
                     'gopls',
-                    'volar',
+                    'vue_ls',
                     'tailwindcss',
                     'nil_ls',
                     'helm_ls',

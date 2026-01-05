@@ -1,17 +1,20 @@
 return {
     "nvim-java/nvim-java", 
-    version = "^2.0.0",
+    version = "^4.0.0",
     config = function()
         require('java').setup({
             jdk = {
                 auto_install = false
             },
-            java_debug_adapter = {
-                version = '0.58.2'
+            jdtls = {
+                version = '1.43.0'
             },
             java_test = {
-	         	version = '0.43.1'
-	        },
+                version = '0.40.1'
+            },
+            java_debug_adapter = {
+                version = '0.58.2'
+            }
         })
 
         vim.lsp.config('jdtls', {
@@ -35,5 +38,6 @@ return {
                 }
             }
         })
+        vim.lsp.enable('jdtls')
     end
 }
