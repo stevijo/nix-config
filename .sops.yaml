@@ -4,6 +4,7 @@ keys:
   - &work age14gxlgx2pw89e233rjgvw6yjlwldyegldk9j3k0xxqd7gvkq43apsmre7gs
   - &router age19w5s8jcfzyxdt262vthc49unslhes86wfyz783qv84wnjaslfa4sdsfxes
   - &home-router age1hur9z8gfsj46n5tzdwlj4tgurjsdhh6pj6vtm2uf24q4gsf04agq3mmkh4
+  - &yubikey age1yubikey1q0xh78ywsf5gckmtx3lt4kh0ajh5wjhp969cas45wvtla2vk65d66z6nshs
 creation_rules:
   - path_regex: secrets.yaml$
     key_groups:
@@ -13,3 +14,4 @@ creation_rules:
         - *work
         - *router
         - *home-router
+        - *yubikey

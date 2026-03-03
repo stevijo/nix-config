@@ -29,6 +29,9 @@ in
 
   environment.etc.hosts.source = lib.mkForce config.sops.secrets.hosts-file.path;
 
+  services.pcscd.enable = true;
+  services.udev.packages = [ pkgs.yubikey-personalization ];
+
   services.printing.enable = true;
   services.avahi = {
     enable = true;
@@ -96,6 +99,8 @@ in
       texliveFull
       prismlauncher
       gcc
+      yubikey-manager
+      yubioath-flutter
       update-script
     ];
 
