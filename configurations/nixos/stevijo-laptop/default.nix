@@ -18,8 +18,9 @@ in
   ];
 
   sops.defaultSopsFile = ./secrets.yaml;
-  sops.age.sshKeyPaths = [
-    "/home/stevijo/.ssh/id_ed25519"
+  sops.age.keyFile = "/home/stevijo/.config/sops/age/keys.txt";
+  sops.age.plugins = [
+    pkgs.age-plugin-yubikey
   ];
   sops.secrets.hosts-file = {
     mode = "0444";
@@ -27,9 +28,14 @@ in
   sops.secrets.wg0 = { };
   sops.secrets.prefix = { };
 
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
   environment.etc.hosts.source = lib.mkForce config.sops.secrets.hosts-file.path;
 
   services.pcscd.enable = true;
+  services.dbus.packages = [ pkgs.gcr ];
   services.udev.packages = [ pkgs.yubikey-personalization ];
 
   services.printing.enable = true;
@@ -101,6 +107,7 @@ in
       gcc
       yubikey-manager
       yubioath-flutter
+      pinentry-curses
       update-script
     ];
 

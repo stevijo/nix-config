@@ -1,6 +1,5 @@
 keys:
   - &main age1kll664z2p52xrfm4rfxcn0wrtk4xwrue827skz2zqy96uzmanvfq3jyzhj
-  - &laptop age1d4pc9jlwda0d40d0ud0dmch5akfu3srvr5y0uldmjzfg9y9344ts5xhmjx
   - &router age19w5s8jcfzyxdt262vthc49unslhes86wfyz783qv84wnjaslfa4sdsfxes
   - &home-router age1hur9z8gfsj46n5tzdwlj4tgurjsdhh6pj6vtm2uf24q4gsf04agq3mmkh4
   - &yubikey age1yubikey1q0xh78ywsf5gckmtx3lt4kh0ajh5wjhp969cas45wvtla2vk65d66z6nshs
@@ -9,7 +8,6 @@ creation_rules:
     key_groups:
       - age:
         - *main
-        - *laptop
         - *router
         - *home-router
         - *yubikey
