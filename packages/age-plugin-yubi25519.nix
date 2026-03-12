@@ -34,11 +34,11 @@ buildGoModule rec {
   buildInputs = [
     openssl
   ]
-  ++ lib.optionals stdenv.hostPlatform.isLinux [ pcsclite ];  
+  ++ lib.optionals stdenv.hostPlatform.isLinux [ pcsclite ];
 
   outputs = [
     "out"
     "dev"
   ];
 
- }
+}

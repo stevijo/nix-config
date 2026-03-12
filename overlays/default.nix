@@ -22,6 +22,7 @@ rec {
     neovim-unwrapped
     sway-unwrapped
     wlroots
+    yubico-piv-tool
     nerd-fonts;
   age-plugin-yubi25519 = self.callPackage "${packages}/age-plugin-yubi25519.nix" { };
   stevijoAge = age'.withPlugins (plugins: lib.attrsets.attrValues plugins ++ [
