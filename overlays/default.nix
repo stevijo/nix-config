@@ -7,9 +7,10 @@ let
 in
 self: super:
 let
-  inherit (super) stdenvAdapters;
+  inherit (super) stdenvAdapters lib;
   strongswan' = self.callPackage "${packages}/strongswan" { inherit (super) strongswan; };
   system = super.stdenv.hostPlatform.system or super.system;
+  age' = super.age;
   unstable = import inputs.nixpkgs-unstable {
     inherit system;
     config.allowUnfree = true;
@@ -22,6 +23,10 @@ rec {
     sway-unwrapped
     wlroots
     nerd-fonts;
+  age-plugin-yubi25519 = self.callPackage "${packages}/age-plugin-yubi25519.nix" { };
+  stevijoAge = age'.withPlugins (plugins: lib.attrsets.attrValues plugins ++ [
+    age-plugin-yubi25519
+  ]);
   vpp-sswan = self.callPackage "${packages}/vpp-sswan" { inherit (super) strongswan; };
   strongswan = strongswan'.withPlugins [
     vpp-sswan

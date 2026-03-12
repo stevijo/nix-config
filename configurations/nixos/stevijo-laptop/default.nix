@@ -20,7 +20,7 @@ in
   sops.defaultSopsFile = ./secrets.yaml;
   sops.age.keyFile = "/home/stevijo/.config/sops/age/keys.txt";
   sops.age.plugins = [
-    pkgs.age-plugin-yubikey
+    pkgs.age-plugin-yubi25519
   ];
   sops.secrets.hosts-file = {
     mode = "0444";
@@ -30,7 +30,7 @@ in
 
   programs.gnupg.agent = {
     enable = true;
-    enableSSHSupport = true;
+    enableSSHSupport = false;
   };
   environment.etc.hosts.source = lib.mkForce config.sops.secrets.hosts-file.path;
 
@@ -44,7 +44,15 @@ in
     nssmdns4 = true;
     openFirewall = true;
   };
-  services.openssh.enable = true;
+  programs.ssh.startAgent = true;
+  programs.ssh.agentPKCS11Whitelist =
+    let
+      pkcs11Path = "${pkgs.yubico-piv-tool}/lib/libykcs11.so.2.7.3";
+    in
+    pkcs11Path;
+  programs.ssh.extraConfig = ''
+    PKCS11Provider ${pkgs.yubico-piv-tool}/lib/libykcs11.so
+  '';
   services.gvfs.enable = true;
   services.blueman.enable = true;
   programs.steam = {
@@ -105,6 +113,8 @@ in
       texliveFull
       prismlauncher
       gcc
+      age-plugin-yubi25519
+      age
       yubikey-manager
       yubioath-flutter
       pinentry-curses

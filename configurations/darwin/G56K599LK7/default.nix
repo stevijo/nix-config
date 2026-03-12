@@ -53,6 +53,7 @@ in
     systemPackages = with pkgs; [
       kitty
       rectangle
+      age-plugin-yubi25519
     ];
     variables = {
       JAVA_HOME_21 = toString java21;
