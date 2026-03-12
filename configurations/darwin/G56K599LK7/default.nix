@@ -54,6 +54,7 @@ in
       kitty
       rectangle
       age-plugin-yubi25519
+      age
     ];
     variables = {
       JAVA_HOME_21 = toString java21;

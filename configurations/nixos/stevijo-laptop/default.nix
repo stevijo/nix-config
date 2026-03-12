@@ -50,9 +50,6 @@ in
       pkcs11Path = "${pkgs.yubico-piv-tool}/lib/libykcs11.so.2.7.3";
     in
     pkcs11Path;
-  programs.ssh.extraConfig = ''
-    PKCS11Provider ${pkgs.yubico-piv-tool}/lib/libykcs11.so
-  '';
   services.gvfs.enable = true;
   services.blueman.enable = true;
   programs.steam = {
