@@ -56,7 +56,8 @@
   '';
   patches = [
     ./0001-fix-dispatch-trace.patch
-    # ./0002-fix-ike-packages-not-forwarded-to-linux.patch
+    ./0002-fix-ike-packages-not-forwarded-to-linux.patch
     ./0003-always-add-loop0.patch
+    ./0004-add-chacha20-support.patch
   ];
 })
