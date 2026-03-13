@@ -1,0 +1,73 @@
+From 42ddba3a3bda4c2cb94b54ca9e244ec4e82699e3 Mon Sep 17 00:00:00 2001
+From: Stefan Mayer <stefan.mayer@sentinelone.com>
+Date: Fri, 13 Mar 2026 13:41:45 +0100
+Subject: [PATCH] always add loop0
+
+---
+ plugins/linux-cp/lcp_ipsec.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/plugins/linux-cp/lcp_ipsec.c b/plugins/linux-cp/lcp_ipsec.c
+index 139681032..786844822 100644
+--- a/plugins/linux-cp/lcp_ipsec.c
++++ b/plugins/linux-cp/lcp_ipsec.c
+@@ -475,6 +475,27 @@ lcp_xfrm_inb_policy_cfg (ip_address_t *t_saddr, ip_address_t *t_daddr,
+       format_ip_address, t_daddr, sa_id, spd_id);
+ }
+ 
++static inline int
++lcp_xfrm_get_iface (u8 *name)
++{
++  vnet_main_t *vnm = vnet_get_main ();
++  vnet_sw_interface_t *sif;
++  u8 *interface_name = 0;
++
++  pool_foreach (sif, vnm->interface_main.sw_interfaces)
++    {
++      vec_reset_length (interface_name);
++      interface_name = format(interface_name, "%U%c", format_vnet_sw_interface_name, vnm,
++              sif, 0);
++      if (!strcasestr((char *) name, (char *) interface_name)) {
++          continue;
++      }
++	  return sif->sw_if_index;
++    }
++  return ~0;
++
++}
++
+ static inline int
+ lcp_xfrm_get_matching_iface (ip46_address_t *addr, u8 is_ipv6)
+ {
+@@ -501,6 +522,7 @@ lcp_xfrm_create_spd (ip_address_t *saddr, ip_address_t *daddr, u32 spi,
+ {
+   vlib_main_t *vm = vlib_get_main ();
+   ipsec_main_t *im = &ipsec_main;
++  int loop_sw_if_index = 0;
+   int rv, is_ipv6;
+   ipsec_spd_t *spd0;
+   u32 spd_id = 0;
+@@ -514,6 +536,12 @@ lcp_xfrm_create_spd (ip_address_t *saddr, ip_address_t *daddr, u32 spi,
+   if (*sw_if_index == ~0)
+     return ~0;
+ 
++
++  loop_sw_if_index = lcp_xfrm_get_iface ("loop0"); 
++  if (loop_sw_if_index == ~0)
++    return ~0;
++
++
+   ptr = hash_get (im->spd_index_by_sw_if_index, *sw_if_index);
+   if (ptr)
+     {
+@@ -531,6 +559,7 @@ lcp_xfrm_create_spd (ip_address_t *saddr, ip_address_t *daddr, u32 spi,
+ 	  return ~0;
+ 	}
+       rv = ipsec_set_interface_spd (vm, *sw_if_index, spd_id, 1);
++      ipsec_set_interface_spd (vm, loop_sw_if_index, spd_id, 1);
+       switch (rv)
+ 	{
+ 	case VNET_API_ERROR_SYSCALL_ERROR_1:
+-- 
+2.50.1 (Apple Git-155)
+

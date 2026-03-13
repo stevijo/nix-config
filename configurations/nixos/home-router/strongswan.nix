@@ -37,16 +37,7 @@ in
          }
        }
        charon {
-          load_modular = yes
           i_dont_care_about_security_and_use_aggressive_mode_psk = yes
-          plugins {
-            include ${pkgs.strongswan}/etc/strongswan.d/charon/kernel-vpp.conf
-            include ${pkgs.strongswan}/share/strongswan/templates/config/plugins/openssl.conf
-            include ${pkgs.strongswan}/share/strongswan/templates/config/plugins/nonce.conf
-            include ${pkgs.strongswan}/share/strongswan/templates/config/plugins/socket-default.conf
-            include ${pkgs.strongswan}/share/strongswan/templates/config/plugins/vici.conf
-            include ${pkgs.strongswan}/share/strongswan/templates/config/plugins/kdf.conf
-          }
       }
     '';
     swanctl = {
