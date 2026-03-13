@@ -28,7 +28,7 @@ index 786844822..c4c83d2b9 100644
      lcp_xfrm_extract_gcm_key_and_salt (crypto_alg, key, &ck, &salt);
 +  else if (crypto_alg == IPSEC_CRYPTO_ALG_CHACHA20_POLY1305)
 +    {
-+        ck.len = 32
++        ck.len = 32;
 +        clib_memcpy_fast (ck.data, (u8 *) key, ck.len);
 +        clib_memcpy_fast (&salt, ((u8 *) key) + ck.len, GCM_SALT_SIZE);
 +    }

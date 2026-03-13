@@ -67,7 +67,7 @@ in
           children = {
             tunnel = {
               esp_proposals = [
-                "aes256gcm128-sha256-modp2048"
+                "chacha20poly1305-sha256-curve25519"
               ];
               mode = "tunnel";
               local_ts = [ "10.12.0.2/32" ];
