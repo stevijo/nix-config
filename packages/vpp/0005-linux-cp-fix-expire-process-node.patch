@@ -1,0 +1,88 @@
+From 30468fbb9012b9baaebf664f25915e148be10048 Mon Sep 17 00:00:00 2001
+From: Monendra Singh Kushwaha <kmonendra@marvell.com>
+Date: Mon, 16 Feb 2026 12:43:28 +0000
+Subject: [PATCH] linux-cp: fix xfrm init and expire process node
+
+Type: fix
+JIRA: https://essjira.marvell.com/browse/IPBUSW-90544
+
+Signed-off-by: Monendra Singh Kushwaha <kmonendra@marvell.com>
+Change-Id: Icd5f8b31cf9d06537b6956342ec3836e24377df8
+---
+ plugins/linux-cp/lcp_ipsec.c   | 15 +++++++++++++--
+ plugins/linux-cp/lcp_xfrm.h    |  2 ++
+ plugins/linux-cp/lcp_xfrm_nl.c | 12 ++++++++++--
+ 3 files changed, 25 insertions(+), 4 deletions(-)
+
+diff --git a/plugins/linux-cp/lcp_ipsec.c b/src/plugins/linux-cp/lcp_ipsec.c
+index d011437b0..d9aaed430 100644
+--- a/plugins/linux-cp/lcp_ipsec.c
++++ b/plugins/linux-cp/lcp_ipsec.c
+@@ -1933,8 +1933,19 @@ uword
+ ipsec_xfrm_expire_process (vlib_main_t *vm, vlib_node_runtime_t *node,
+ 			   vlib_frame_t *frame)
+ {
+-  /* init will wake it up */
+-  vlib_process_wait_for_event (vm);
++  uword event_type = 0;
++
++  while (1)
++    {
++      vlib_process_wait_for_event (vm);
++      event_type = vlib_process_get_events (vm, 0);
++      if (event_type == XFRM_EXP_PRO_START_EVENT)
++	break;
++      else
++	{
++	  clib_warning ("Unknown event type %d", event_type);
++	}
++    }
+ 
+   while (1)
+     {
+diff --git a/plugins/linux-cp/lcp_xfrm.h b/src/plugins/linux-cp/lcp_xfrm.h
+index 1377bd54d..2fde00e20 100644
+--- a/plugins/linux-cp/lcp_xfrm.h
++++ b/plugins/linux-cp/lcp_xfrm.h
+@@ -44,6 +44,8 @@
+ #include <vnet/fib/ip6_fib.h>
+ #include <vnet/fib/mpls_fib.h>
+ 
++#define XFRM_EXP_PRO_START_EVENT 1
++
+ #define NL_RT_COMMON		     uword is_mp_safe
+ #define NL_RX_BUF_SIZE_DEF	     (1 << 28) /* 256 MB */
+ #define NL_TX_BUF_SIZE_DEF	     (1 << 20) /* 1 MB */
+diff --git a/plugins/linux-cp/lcp_xfrm_nl.c b/src/plugins/linux-cp/lcp_xfrm_nl.c
+index e7148584a..b0c67739a 100644
+--- a/plugins/linux-cp/lcp_xfrm_nl.c
++++ b/plugins/linux-cp/lcp_xfrm_nl.c
+@@ -560,8 +560,6 @@ lcp_xfrm_itf_pair_config (vlib_main_t *vm, unformat_input_t *input)
+       0, "enable-route-mode-ipsec configuration is missing");
+ 
+   lcp_xfrm_nl_open_socket ();
+-  vlib_process_signal_event (vlib_get_main (),
+-			     ipsec_xfrm_expire_process_node.index, 0, 0);
+ 
+   return NULL;
+ }
+@@ -655,6 +653,16 @@ lcp_xfrm_nl_open_socket (void)
+   NL_INFO ("Opened netlink socket %d", nl_socket_get_fd (nm->sk_xfrm));
+ }
+ 
++clib_error_t *
++lcp_nl_xfrm_main_loop_enter (vlib_main_t *vm)
++{
++  vlib_process_signal_event (vm, ipsec_xfrm_expire_process_node.index,
++			     XFRM_EXP_PRO_START_EVENT, 0);
++  return NULL;
++}
++
++VLIB_MAIN_LOOP_ENTER_FUNCTION (lcp_nl_xfrm_main_loop_enter);
++
+ clib_error_t *
+ lcp_nl_xfrm_init (vlib_main_t *vm)
+ {
+-- 
+2.51.2
+

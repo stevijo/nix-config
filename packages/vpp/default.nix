@@ -59,5 +59,6 @@
     ./0002-fix-ike-packages-not-forwarded-to-linux.patch
     ./0003-always-add-loop0.patch
     ./0004-add-chacha20-support.patch
+    ./0005-linux-cp-fix-expire-process-node.patch
   ];
 })
