@@ -44,7 +44,7 @@ in
       connections = {
         vyos = {
           proposals = [
-            "aes256-sha256-modp2048"
+            "chacha20poly1305-sha256-curve25519"
           ];
           version = 2;
           dpd_delay = "30";
