@@ -1,6 +1,6 @@
 keys:
-  - &router ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFrjA3XL8nbVeJszytZKJ2UVjzxMAT6gI74o81mQ4MuT
-  - &home-router ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILUZfqq1SRWolii4oKwUyeUNdtqNDtvwu5LkKujg8wJo
+  - &router age19w5s8jcfzyxdt262vthc49unslhes86wfyz783qv84wnjaslfa4sdsfxes
+  - &home-router age1hur9z8gfsj46n5tzdwlj4tgurjsdhh6pj6vtm2uf24q4gsf04agq3mmkh4
   - &yubikey ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAAGXGRGgDfeluY1/CjIz0Q745fexf8d/tDLCZ9SwHwZ 
 creation_rules:
   - path_regex: secrets.yaml$
