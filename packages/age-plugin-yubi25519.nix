@@ -14,8 +14,8 @@ buildGoModule rec {
   src = fetchFromGitHub {
     owner = "stevijo";
     repo = "yubikey";
-    rev = "be2a0fda19f7270e79a88e4ab9aacce42818c55f";
-    hash = "sha256-9yKVDgxS1iYA5/9973drBqPmZRiVY2zBqJ52SOTBeR0=";
+    rev = "33654338b161fa0e8b8661dcc8ea2f5826400e39";
+    hash = "sha256-r7YbHOToK7vmT2r5AnUYuyOnTMwAoJDuXac5+q4vUmc=";
   };
 
   vendorHash = "sha256-t+T9YpCJjrwjwkPlK4nWvtJpTMSx9imlWvD4kSE8pH8=";
