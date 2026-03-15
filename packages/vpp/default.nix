@@ -47,6 +47,8 @@
             continue
         elif [ "$name" = "0024-T7860-IPv6-ICMP-RA-punt-shortcut-36.patch" ]; then
             continue
+        elif [ "$name" = "0027-linux-cp-T8251-sync-VPP-IPsec-SA-counters-to-Linux-X.patch" ]; then
+            continue
         fi
         newPatch=patches/vpp/$name
         sed -e 's/src\///g' $patch > $newPatch 

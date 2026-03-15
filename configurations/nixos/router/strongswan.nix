@@ -34,6 +34,7 @@ in
        charon-systemd {
          journal {
            knl = 3
+           ike = 3
          }
        }
        charon {
@@ -46,6 +47,7 @@ in
           proposals = [
             "chacha20poly1305-sha256-curve25519"
           ];
+          keyingtries = 0;
           version = 2;
           dpd_delay = "30";
           dpd_timeout = "120";
