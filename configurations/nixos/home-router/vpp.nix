@@ -42,9 +42,6 @@ in
             "rdma_plugin.so".disable = true;
             "linux_cp_plugin.so".enable = true;
             "linux_nl_plugin.so".enable = true;
-            "igmp_plugin.so".disable = true;
-            "arping_plugin.so".disable = true;
-            "ikev2_plugin.so".disable = true;
           };
         };
         startupConfig = ''
@@ -61,11 +58,7 @@ in
           set int mtu packet 1500 $(ETH0)
           set int state $(ETH0) up
           set int ip address $(ETH0) 10.13.0.5/31
-
-          loopback create
-          set int state loop0 up
-          set int ip address loop0 10.12.0.3/31
-          set ip neighbor loop0 10.12.0.2 24:6e:96:9c:e5:de
+          set int ip address $(ETH0) 10.12.0.3/32
 
           create gre tunnel src 10.12.0.3 dst 10.12.0.2 teb
           set int state gre0 up

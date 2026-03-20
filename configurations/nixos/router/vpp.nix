@@ -44,12 +44,8 @@ in
           };
           plugins.plugin = {
             "dpdk_plugin.so".disable = true;
-            "rdma_plugin.so".disable = true;
             "linux_cp_plugin.so".enable = true;
             "linux_nl_plugin.so".enable = true;
-            "igmp_plugin.so".disable = true;
-            "arping_plugin.so".disable = true;
-            "ikev2_plugin.so".disable = true;
           };
         };
         startupConfig = ''
@@ -66,11 +62,7 @@ in
           set int mtu packet 1500 $(ETH0)
           set int state $(ETH0) up
           set int ip address $(ETH0) 10.32.32.5/24
-
-          loopback create
-          set int state loop0 up
-          set int ip address loop0 10.12.0.2/31
-          set ip neighbor loop0 10.12.0.3 24:6e:96:9c:e5:de
+          set int ip address $(ETH0) 10.12.0.2/32
 
           create gre tunnel src 10.12.0.2 dst 10.12.0.3 teb
           set int state gre0 up
@@ -84,9 +76,10 @@ in
           set interface l2 bridge gre0 100
 
           loopback create
-          set int state loop1 up
-          set int ip address loop1 10.14.0.5/24
-          set interface l2 bridge loop1 100 bvi
+          set int mtu packet 1500 loop0
+          set int state loop0 up
+          set int ip address loop0 10.14.0.5/24
+          set interface l2 bridge loop0 100 bvi
 
           set ipsec async mode on
         '';
