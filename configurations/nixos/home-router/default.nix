@@ -29,7 +29,7 @@ in
     git
     acpi
     python3
-    nodejs_20
+    nodejs_24
     sysstat
     vim
   ];

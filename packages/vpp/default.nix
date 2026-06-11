@@ -11,6 +11,7 @@
   # cmakeFlags = old.cmakeFlags ++ [
   #   "-D CMAKE_BUILD_TYPE=Debug"
   # ];
+  version = "25.10";
 
   src = fetchgit {
     leaveDotGit = true;
@@ -28,6 +29,13 @@
 
   nativeBuildInputs = old.nativeBuildInputs ++ [
     gnused
+  ];
+
+  env.NIX_CFLAGS_COMPILE = toString [
+    "-Wno-error=maybe-uninitialized"
+    "-Wno-error=compare-distinct-pointer-types"
+    "-Wno-error=incompatible-pointer-types"
+    "-Wno-error=stringop-truncation"
   ];
 
   prePatch = ''

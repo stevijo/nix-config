@@ -55,7 +55,6 @@ in
   programs.steam = {
     enable = true;
   };
-  programs.adb.enable = true;
   programs.nix-ld.enable = true;
 
   networking.wireguard.enable = true;
@@ -95,7 +94,7 @@ in
       lm_sensors
       acpi
       imagemagick
-      nodejs_20
+      nodejs_24
       python3
       gnome-control-center
       gnome-tweaks
@@ -116,6 +115,7 @@ in
       yubioath-flutter
       pinentry-curses
       update-script
+      android-tools
     ];
 
   environment.variables = {
@@ -160,9 +160,7 @@ in
       User = "stevijo";
     };
   };
-  systemd.sleep.extraConfig = ''
-    HibernateDelaySec=30m
-  '';
+  systemd.sleep.settings.Sleep.HibernateDelaySec = "30m";
   services.logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
   home-manager.sharedModules = [{
     wayland.windowManager.sway.config.output = {
@@ -189,7 +187,7 @@ in
 
   programs.wireshark = {
     enable = true;
-    package = pkgs.wireshark-qt;
+    package = pkgs.wireshark;
   };
 
   services.tlp = {

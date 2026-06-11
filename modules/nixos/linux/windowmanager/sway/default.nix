@@ -141,7 +141,7 @@ in
     fontconfig
     silver-searcher
     playerctl
-    light
+    brightnessctl
     pulseaudio
     pipewire
     wl-clipboard
