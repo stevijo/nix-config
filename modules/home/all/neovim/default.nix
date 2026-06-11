@@ -37,6 +37,8 @@ in
     ];
     programs.neovim = {
       enable = true;
+      withRuby = true;
+      withPython3 = true;
       plugins = with pkgs.vimPlugins; [
         {
           plugin = lazy-nvim;
@@ -56,7 +58,7 @@ in
       extraPackages = with pkgs; [
         ripgrep
       ];
-      extraLuaConfig = ''
+      initLua = ''
         require("stevijo")
 
         vim.g.palantirformat = "${./palantir-java-format.jar}"
