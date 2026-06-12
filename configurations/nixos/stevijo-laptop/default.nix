@@ -18,9 +18,8 @@ in
   ];
 
   sops.defaultSopsFile = ./secrets.yaml;
-  sops.age.keyFile = "/home/stevijo/.config/sops/age/keys.txt";
-  sops.age.plugins = [
-    pkgs.age-plugin-yubi25519
+  sops.age.sshKeyPaths = [
+    "/home/stevijo/.ssh/id_ed25519"
   ];
   sops.secrets.hosts-file = {
     mode = "0444";
