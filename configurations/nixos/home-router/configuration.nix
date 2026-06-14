@@ -14,6 +14,11 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelParams = [
+    "isolcpus=1-2"
+    "nohz_full=1-2"
+    "rcu_nocbs=1-2"
+  ];
 
   boot.kernelPackages = pkgs.linuxPackagesFor (pkgs.linuxKernel.kernels.linux_6_6);
 

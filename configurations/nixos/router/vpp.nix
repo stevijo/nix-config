@@ -34,6 +34,10 @@ in
       main = {
         enable = true;
         settings = {
+          cpu = {
+            "main-core" = 1;
+            "corelist-workers" = "2-3";
+          };
           unix.full-coredump = true;
           unix.coredump-size = "unlimited";
           buffers = {

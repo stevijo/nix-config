@@ -16,6 +16,11 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.kernelPackages = pkgs.linuxPackagesFor (pkgs.linuxKernel.kernels.linux_6_6);
+  boot.kernelParams = [
+    "isolcpus=1-3"
+    "nohz_full=1-3"
+    "rcu_nocbs=1-3"
+  ];
 
 
   networking.hostName = "router"; # Define your hostname.

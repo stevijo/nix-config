@@ -34,6 +34,9 @@ in
       main = {
         enable = true;
         settings = {
+          cpu = {
+            "main-core" = 1;
+          };
           api-segment = {
             prefix = false;
           };
