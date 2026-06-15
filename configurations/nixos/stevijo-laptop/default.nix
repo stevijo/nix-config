@@ -34,6 +34,7 @@ in
   environment.etc.hosts.source = lib.mkForce config.sops.secrets.hosts-file.path;
 
   services.pcscd.enable = true;
+  services.fprintd.enable = true;
   services.dbus.packages = [ pkgs.gcr ];
   services.udev.packages = [ pkgs.yubikey-personalization ];
 
@@ -161,6 +162,7 @@ in
   };
   systemd.sleep.settings.Sleep.HibernateDelaySec = "30m";
   services.logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
+  services.logind.settings.Login.HandlePowerKey = "ignore";
   home-manager.sharedModules = [{
     wayland.windowManager.sway.config.output = {
       "eDP-1" = {
