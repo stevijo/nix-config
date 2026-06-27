@@ -14,7 +14,7 @@
   # Bootloader.
   boot.loader.efi.canTouchEfiVariables = true;
 
-  boot.kernelPackages = pkgs.linuxPackagesFor (pkgs.linuxKernel.kernels.linux_7_0);
+  boot.kernelPackages = pkgs.linuxPackagesFor (pkgs.linuxKernel.kernels.linux_7_1);
 
 
   boot.initrd.luks.devices."luks-4c38fd07-7b33-403d-a17d-a1fd1467698d".device = "/dev/disk/by-uuid/4c38fd07-7b33-403d-a17d-a1fd1467698d";
