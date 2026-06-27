@@ -35,6 +35,13 @@ in
 
   services.pcscd.enable = true;
   services.fprintd.enable = true;
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+      if (action.id == "net.reactivated.fprint.device.verify") {
+        return polkit.Result.YES;
+      }
+    });
+  '';
   services.dbus.packages = [ pkgs.gcr ];
   services.udev.packages = [ pkgs.yubikey-personalization ];
 
@@ -146,7 +153,7 @@ in
   systemd.services.lock = {
     enable = true;
     description = "Lock the screen";
-    before = [ "systemd-suspend.service" ];
+    before = [ "sleep.target" ];
     wantedBy = [ "sleep.target" ];
     path = [
       "/run/current-system/sw"
