@@ -89,8 +89,8 @@ in
       update-script = pkgs.writeShellScriptBin "update-tpm-keys" ''
         read -s -p "TPM Password: " password
         echo
-        sudo env PASSWORD=$password ${pkgs.systemd}/bin/systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+2+4+7 /dev/nvme0n1p3
-        sudo env PASSWORD=$password ${pkgs.systemd}/bin/systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+2+4+7 /dev/nvme0n1p2
+        sudo env PASSWORD=$password ${pkgs.systemd}/bin/systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+2+4+7+9+11 /dev/nvme0n1p3
+        sudo env PASSWORD=$password ${pkgs.systemd}/bin/systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+2+4+7+9+11 /dev/nvme0n1p2
       '';
 
     in
