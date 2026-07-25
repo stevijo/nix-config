@@ -45,7 +45,7 @@ in
       connections = {
         vyos = {
           proposals = [
-            "chacha20poly1305-sha256-curve25519"
+            "aes256gcm16-sha256-curve25519"
           ];
           version = 2;
           keyingtries = 0;
@@ -72,7 +72,7 @@ in
           children = {
             tunnel = {
               esp_proposals = [
-                "chacha20poly1305-sha256-curve25519"
+                "aes256gcm16-sha256-curve25519"
               ];
               mode = "tunnel";
               local_ts = [ "10.12.0.3/32" ];
