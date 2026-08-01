@@ -15,13 +15,9 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  boot.kernelPackages = pkgs.linuxPackagesFor (pkgs.linuxKernel.kernels.linux_6_6);
-  boot.kernelParams = [
-    "isolcpus=1-3"
-    "nohz_full=1-3"
-    "rcu_nocbs=1-3"
-  ];
-
+  # Enable IP forwarding so the kernel can route between ens18, ens19,
+  # and the strongSwan IPsec tunnel to the fritz.
+  boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
 
   networking.hostName = "router"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -30,8 +26,44 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Enable networking
-  # networking.networkmanager.enable = true;
+  # Static networking (no NetworkManager, no VPP)
+  networking.useDHCP = false;
+  networking.defaultGateway = "10.32.32.2";
+  networking.nameservers = [
+    "1.1.1.1"
+    "1.0.0.1"
+  ];
+  networking.interfaces.ens18 = {
+    useDHCP = false;
+    ipv4.addresses = [
+      {
+        address = "10.32.32.5";
+        prefixLength = 24;
+      }
+    ];
+    ipv4.routes = [
+      {
+        address = "192.168.2.0";
+        prefixLength = 24;
+      }
+    ];
+  };
+  networking.interfaces.ens19 = {
+    useDHCP = false;
+    ipv4.addresses = [
+      {
+        address = "10.15.0.1";
+        prefixLength = 24;
+      }
+    ];
+    ipv4.routes = [
+      {
+        address = "192.168.0.0";
+        prefixLength = 16;
+        via = "10.15.0.2";
+      }
+    ];
+  };
 
   # Set your time zone.
   time.timeZone = "Europe/Prague";

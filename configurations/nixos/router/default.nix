@@ -11,8 +11,6 @@ in
     inputs.sops-nix.nixosModules.sops
     self.nixosModules.default
     ./configuration.nix
-    ./vpp.nix
-    ./frr.nix
     ./strongswan.nix
     (self + /modules/nixos/linux/docker.nix)
   ];
@@ -22,7 +20,6 @@ in
   sops.age.sshKeyPaths = [
     "/home/stevijo/.ssh/id_ed25519"
   ];
-  sops.secrets.ikev2-password = { };
   sops.secrets.ikev-fritz = { };
   sops.secrets.remote-fritz = { };
   sops.secrets.remote-local = { };
@@ -47,7 +44,7 @@ in
   services.fwupd.enable = true;
 
   users.users.stevijo = {
-    extraGroups = [ "video" "docker" "vpp" ];
+    extraGroups = [ "video" "docker" ];
   };
   security.sudo.extraRules = [
     {
