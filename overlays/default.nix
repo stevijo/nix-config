@@ -30,8 +30,4 @@ rec {
   stevijoAge = age'.withPlugins (plugins: lib.attrsets.attrValues plugins ++ [
     age-plugin-yubi25519
   ]);
-  vpp = self.callPackage "${packages}/vpp" {
-    inherit (super) vpp;
-    inherit (stdenvAdapters) keepDebugInfo;
-  };
 }
