@@ -120,6 +120,7 @@ rec {
           ./0002-sddm-config-path.patch
           # FIXME: build steamos-log-submitter and reenable this maybe?
           ./0003-disable-ftrace.patch
+          ./0004-ally-x.patch
         ];
       })
       {

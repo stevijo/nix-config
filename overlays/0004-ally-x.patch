@@ -1,0 +1,80 @@
+From 07b6378518d6427f85806b77dbf3b38f3729d605 Mon Sep 17 00:00:00 2001
+From: Stefan Mayer <stevijo.mayer@googlemail.com>
+Date: Wed, 4 Nov 2026 22:17:54 +0100
+Subject: [PATCH 4/4] ally x
+
+---
+ data/devices/rog-ally-series.toml |  7 ------
+ data/devices/rog-xbox-ally-x.toml | 42 +++++++++++++++++++++++++++++++
+ 2 files changed, 42 insertions(+), 7 deletions(-)
+ create mode 100644 data/devices/rog-xbox-ally-x.toml
+
+diff --git a/data/devices/rog-ally-series.toml b/data/devices/rog-ally-series.toml
+index a1a52b5..f66315b 100644
+--- a/data/devices/rog-ally-series.toml
++++ b/data/devices/rog-ally-series.toml
+@@ -19,13 +19,6 @@ device = "rog_xbox_ally_x"
+ variant = "RC73XA"
+ friendly_name = "ROG Xbox Ally"
+ 
+-[[device]]
+-dmi.sys_vendor = "ASUS"
+-dmi.board_name = "RC74XA"
+-device = "rog_xbox_ally_x_20"
+-variant = "RC74XA"
+-friendly_name = "ROG Xbox Ally"
+-
+ [gpu_performance]
+ driver = "amdgpu"
+ 
+diff --git a/data/devices/rog-xbox-ally-x.toml b/data/devices/rog-xbox-ally-x.toml
+new file mode 100644
+index 0000000..aa49c5b
+--- /dev/null
++++ b/data/devices/rog-xbox-ally-x.toml
+@@ -0,0 +1,42 @@
++# SPDX-License-Identifier: MIT
++# ally-x20-steamos: steamos-manager device entry for the ROG Xbox Ally X20
++# (board RC74XA). Rendered to /etc/ally-x20-steamos/steamos-manager/ by
++# component power and merged into /usr/share/steamos-manager/devices by
++# ally-x20-steamos-power-devices.service only while no stock file there
++# mentions RC74XA (docs/power.md).
++#
++# Values from upstream steamos-manager commit bfbb261ed6b2 ("fix: Add XBox
++# ROG Ally X 20", 2026-10-16), written in the schema of the stock
++# steamos-manager 26.4.1 ([performance_profile] platform_profile_name; the
++# [performance_profile.driver.acpi] table came later). The X20 reports
++# sys_vendor "ASUS", not "ASUSTeK COMPUTER INC." like the older Allys, so it
++# needs its own file instead of a [[device]] block in rog-ally-series.toml.
++#
++# Differences from upstream, measured on the X20 (BIOS RC74XA.303):
++#   - no [tdp_limit]: the firmware ignores PPT writes, so Steam's slider
++#     would change nothing. `ally-x20-steamos power tdp-slider on` appends
++#     upstream's [tdp_limit] tables for testing after a BIOS update.
++#   - no [gpu_power_profile]: this APU has no pp_power_profile_mode, so
++#     steamos-manager only logged "Error getting GPU power profile".
++#   - suggested_default "balanced" (upstream "performance", which only
++#     existed so the slider would show): the firmware's own boot profile,
++#     and better battery life on battery.
++
++[[device]]
++dmi.sys_vendor = "ASUS"
++dmi.board_name = "RC74XA"
++device = "rog_xbox_ally_x_20"
++variant = "RC74XA"
++friendly_name = "ROG Xbox Ally"
++
++# Steam's manual GPU clock fails with EINVAL on this APU; kept as upstream
++# has it (harmless otherwise, docs/power.md).
++[gpu_performance]
++driver = "amdgpu"
++
++[performance_profile]
++platform_profile_name = "asus-wmi"
++suggested_default = "balanced"
++
++[battery_charge_limit]
++method = "acpi_sb"
+-- 
+2.56.0
+
