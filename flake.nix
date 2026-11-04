@@ -21,6 +21,17 @@
     # Software inputs
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Steam Deck like experience on regular x86_64 hardware.
+    # Jovian ships vendor builds of pipewire/wireplumber/mesa/gamescope
+    # which are only usable with the nixpkgs revision they were built
+    # against, so it has to follow nixos-unstable.
+    jovian.url = "github:Jovian-Experiments/Jovian-NixOS/development";
+    jovian.inputs.nixpkgs.follows = "nixpkgs-unstable";
+
+    # Home-manager matching nixos-unstable, for the hosts which run it.
+    home-manager-unstable.url = "github:nix-community/home-manager/master";
+    home-manager-unstable.inputs.nixpkgs.follows = "nixpkgs-unstable";
   };
 
   # Wired using https://nixos-unified.org/autowiring.html

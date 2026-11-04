@@ -1,0 +1,64 @@
+Support the TI TAS2783 speaker amplifier codec
+
+The ASUS ROG Xbox Ally X20 exposes its speakers through a SoundWire
+topology that uses two TAS2783 amplifiers.  ALSA's UCM configuration
+only knows about the RT1318 codec, so the speaker codec is filtered out
+by the "If.spk" condition and the amplifier switches are never enabled.
+
+This is the patch from ublue-os/bazzite (commit c500b43388e3, "revertme:
+Patch in Ally X20 Audio support until alsa-ucm-conf package is updated
+upstream").
+
+Only ucm2/sof-soundwire/sof-soundwire.conf has to be patched: the
+copies in ucm2/conf.d/amd-soundwire and ucm2/conf.d/sof-soundwire are
+symlinks to it.
+
+--- a/ucm2/sof-soundwire/sof-soundwire.conf
++++ b/ucm2/sof-soundwire/sof-soundwire.conf
+@@ -134,7 +134,7 @@
+ 	False.If.filter {
+ 		Condition {
+ 			Type RegexMatch
+-			Regex "(${var:MultiCodecRegex}|rt1318|cs42l43-spk(\\+cs35l56)?|cs35l56((-bridge)|(\\+cs42l43-spk))?)"
++			Regex "(${var:MultiCodecRegex}|tas2783|rt1318|cs42l43-spk(\\+cs35l56)?|cs35l56((-bridge)|(\\+cs42l43-spk))?)"
+ 			String "${var:SpeakerCodecFile}"
+ 		}
+ 		True.Include.a.File "/codecs/${var:SpeakerCodecFile}/init.conf"
+--- a/ucm2/codecs/tas2783/init.conf
++++ b/ucm2/codecs/tas2783/init.conf
+@@ -0,0 +1,8 @@
++# tas2783 specific switch control settings
++
++BootSequence [
++	cset "name='Left Spk' on"
++	cset "name='Right Spk' on"
++	cset "name='Left Spk2' on"
++	cset "name='Right Spk2' on"
++]
+--- a/ucm2/sof-soundwire/tas2783.conf
++++ b/ucm2/sof-soundwire/tas2783.conf
+@@ -0,0 +1,24 @@
++# Use case Configuration for sof-soundwire card
++
++SectionDevice."Speaker" {
++	Comment	"Speaker"
++
++	EnableSequence [
++		cset "name='Left Spk Switch' on"
++		cset "name='Right Spk Switch' on"
++		cset "name='Left Spk2 Switch' on"
++		cset "name='Right Spk2 Switch' on"
++	]
++
++	DisableSequence [
++		cset "name='Left Spk Switch' off"
++		cset "name='Right Spk Switch' off"
++		cset "name='Left Spk2 Switch' off"
++		cset "name='Right Spk2 Switch' off"
++	]
++
++	Value {
++	      PlaybackPriority 100
++	      PlaybackPCM "hw:${CardId},2"
++	}
++}
