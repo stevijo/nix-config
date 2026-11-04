@@ -50,12 +50,25 @@ rec {
     {
       inputplumber' = super.jovianPackages.inputplumber;
     };
+  # The ROG Xbox Ally X20 has the PCI subsystem device id 0x1954. The
+  # kernel asks for the TAS2783 amplifier firmware as
+  # "<subsystem>-<link>-0x<uid>.bin", but linux-firmware only ships the
+  # four field variant.
   linux-firmware = super.linux-firmware.overrideAttrs (oldAttrs: {
-      postPatch = ''
-        cp ti/audio/tas2783/1954-0-0-0x8.bin ti/audio/tas2783/1954-0-0x8.bin 
-        cp ti/audio/tas2783/1954-0-0-0xB.bin ti/audio/tas2783/1954-0-0xB.bin 
-      '';
-    });
+    postPatch = ''
+      cp ti/audio/tas2783/1954-0-0-0x8.bin ti/audio/tas2783/1954-0-0x8.bin
+      cp ti/audio/tas2783/1954-0-0-0xB.bin ti/audio/tas2783/1954-0-0xB.bin
+
+      # copy-firmware.sh only installs what is listed in WHENCE, so the
+      # new files have to be added there as well.
+      printf '%s\n' \
+        'File: ti/audio/tas2783/1954-0-0x8.bin' \
+        'File: ti/audio/tas2783/1954-0-0xB.bin' \
+        'Link: 1954-0-0x8.bin -> ti/audio/tas2783/1954-0-0x8.bin' \
+        'Link: 1954-0-0xB.bin -> ti/audio/tas2783/1954-0-0xB.bin' \
+        >> WHENCE
+    '';
+  });
   age-plugin-yubi25519 = self.callPackage "${packages}/age-plugin-yubi25519.nix" { };
   stevijoAge = age'.withPlugins (plugins: lib.attrsets.attrValues plugins ++ [
     age-plugin-yubi25519
