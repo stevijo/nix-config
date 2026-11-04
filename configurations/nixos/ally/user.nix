@@ -17,6 +17,10 @@ in
       "video"
       "render"
       "input"
+      "gamemode"
+      "uinput"
+      "led"
+      "decky"
     ];
   };
 

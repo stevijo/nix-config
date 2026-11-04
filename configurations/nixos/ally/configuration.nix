@@ -46,7 +46,85 @@ in
       };
     };
 
-    boot.kernelPackages = pkgs.linuxPackagesFor (pkgs.linuxKernel.kernels.linux_7_3);
+    boot.kernelPackages = pkgs.jovianPackages.linuxPackages;
+    boot.kernelPatches = [
+      {
+        name = "0001-ASoC-amd-acpi-add-RC74XA-link0-tas2783-layout";
+        patch = ./0001-ASoC-amd-acpi-add-RC74XA-link0-tas2783-layout.patch;
+      }
+      {
+        name = "0002-ACPI-x86-quirk-ignore-acp-audio-config-flag-RC74XA";
+        patch = ./0002-ACPI-x86-quirk-ignore-acp-audio-config-flag-RC74XA.patch;
+      }
+      {
+        name = "0003-ASoC-sdw_utils-honor-empty-DisCo-port-lists";
+        patch = ./0003-ASoC-sdw_utils-honor-empty-DisCo-port-lists.patch;
+      }
+      {
+        name = "0004-ASoC-tas2783-sdw-keep-the-volume-settings-across-resets";
+        patch = ./0004-ASoC-tas2783-sdw-keep-the-volume-settings-across-resets.patch;
+      }
+      {
+        name = "0005-ASoC-tas2783-sdw-load-the-firmware-synchronously";
+        patch = ./0005-ASoC-tas2783-sdw-load-the-firmware-synchronously.patch;
+      }
+      {
+        name = "0006-ASoC-tas2783-sdw-refuse-playback-when-init-writes-failed";
+        patch = ./0006-ASoC-tas2783-sdw-refuse-playback-when-init-writes-failed.patch;
+      }
+      {
+        name = "0010-hid-asus-ally-alias-LED-to-go_s-and-fix-mc_subled";
+        patch = ./0010-hid-asus-ally-alias-LED-to-go_s-and-fix-mc_subled.patch;
+      }
+      {
+        name = "0011-hid-asus-ally-add-effect-speed-mode-sysfs";
+        patch = ./0011-hid-asus-ally-add-effect-speed-mode-sysfs.patch;
+      }
+      {
+        name = "0012-hid-asus-ally-report-X20-top-right-key-0xa0";
+        patch = ./0012-hid-asus-ally-report-X20-top-right-key-0xa0.patch;
+      }
+      {
+        name = "0013-hid-asus-ally-fix-use-after-free-on-interface-unbind";
+        patch = ./0013-hid-asus-ally-fix-use-after-free-on-interface-unbind.patch;
+      }
+      {
+        name = "0014-hid-asus-ally-scale-rumble-and-vibration-intensity-to-0-100";
+        patch = ./0014-hid-asus-ally-scale-rumble-and-vibration-intensity-to-0-100.patch;
+      }
+      {
+        name = "0015-hid-asus-ally-hold-X20-top-right-key-for-250-ms";
+        patch = ./0015-hid-asus-ally-hold-X20-top-right-key-for-250-ms.patch;
+      }
+      {
+        name = "0020-asus-armoury-add-ROG-Xbox-Ally-X20-RC74XA-power-limits";
+        patch = ./0020-asus-armoury-add-ROG-Xbox-Ally-X20-RC74XA-power-limits.patch;
+      }
+    ];
+    boot.kernelModules = [
+      "hid_nintendo"
+      "hid_playstation"
+    ];
+
+    boot.kernelParams = [
+      "quiet"
+      "splash"
+      "amd_pstate=active"
+      "rd.systemd.show_status=false"
+      "amdgpu.gttsize=8128"
+    ];
+
+    services.udev.extraRules = ''
+      # Enables manual GPU clock control in Steam
+      # - /sys/class/drm/card0/device/power_dpm_force_performance_level
+      # - /sys/class/drm/card0/device/pp_od_clk_voltage
+      ACTION=="add", SUBSYSTEM=="pci", DRIVER=="amdgpu", RUN+="${pkgs.coreutils}/bin/chmod a+w /sys/%p/power_dpm_force_performance_level /sys/%p/pp_od_clk_voltage"
+
+      # https://github.com/ublue-os/bazzite/blob/f5f033424281f88f0a132ec0561a5a5f002faf24/system_files/deck/shared/usr/lib/udev/rules.d/50-ally-fingerprint.rules
+      ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{idVendor}=="1c7a", ATTR{idProduct}=="0588", ATTR{power/control}="auto"
+    '';
+
+    services.asusd.enable = true;
 
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
@@ -69,6 +147,12 @@ in
       LC_TELEPHONE = "cs_CZ.UTF-8";
       LC_TIME = "cs_CZ.UTF-8";
     };
+    i18n.inputMethod = {
+      enable = true;
+      type = "ibus";
+      ibus.engines = with pkgs.ibus-engines; [ table-chinese pinyin anthy hangul mozc ];
+      ibus.panel = "${pkgs.kdePackages.plasma-desktop}/libexec/kimpanel-ibus-panel";
+    };
 
     # Configure keymap in X11
     services.xserver.xkb = {
@@ -79,35 +163,55 @@ in
     # Configure console keymap
     console.keyMap = "uk";
 
-
     services.openssh.enable = true;
 
     # The Steam session is started for this user, the same one that is used
     # for the desktop session.
     jovian.hardware.has.amd.gpu = true;
 
+    hardware.steam-hardware.enable = true;
+    hardware.uinput.enable = true;
+
+    programs.steam = {
+      enable = true;
+      package = lib.mkForce (pkgs.jovianPackages.steam.override {
+        # adds needed xorg library for nested gamescope
+        extraPkgs = pkgs': with pkgs'; [
+          xorg.libXcursor
+          xorg.libXi
+          xorg.libXinerama
+          xorg.libXScrnSaver
+          libpng
+          libpulseaudio
+          libvorbis
+          stdenv.cc.cc.lib # Provides libstdc++.so.6
+          libkrb5
+          keyutils # Add other libraries as needed
+        ];
+      });
+      protontricks.enable = true;
+    };
+
+    services.inputplumber.package = lib.mkForce pkgs.x20-inputplumber;
+
     jovian.steam = {
       enable = true;
       autoStart = true;
       user = username;
       desktopSession = "plasma";
-      environment = {
-        PROTON_USE_NTSYNC = "1";
-        ENABLE_HDR_WSI = "1";
-        DXVK_HDR = "1";
-        PROTON_ENABLE_AMD_AGS = "1";
-        PROTON_ENABLE_NVAPI = "1";
-        ENABLE_GAMESCOPE_WSI = "1";
-        STEAM_MULTIPLE_XWAYLANDS = "1";
-      };
     };
+
+    jovian.steamos.enableZram = false;
 
     xdg.portal.enable = true;
     services.flatpak.enable = true;
 
     jovian.decky-loader = {
       enable = true;
+      user = username;
+      extraPackages = with pkgs; [ ryzenadj ];
     };
+
     # enable Steam CEF remote debugging for decky-loader
     systemd.tmpfiles.settings."steam-cef-remote-debugging"."${
       config.users.users.${username}.home
@@ -135,6 +239,9 @@ in
       gamescope-wsi
       mangohud
     ];
+
+    programs.firefox.enable = true;
+    programs.firefox.package = pkgs.firefox-bin;
 
     # Firmware updates for the mainboard and the controllers.
     services.fwupd.enable = true;

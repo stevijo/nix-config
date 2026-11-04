@@ -6,6 +6,10 @@
 
 {
   services.desktopManager.plasma6.enable = true;
+  programs.kdeconnect.enable = true;
+
+  services.xserver.enable = true;
+  services.xserver.displayManager.startx.enable = true;
 
   hardware.graphics = {
     enable = true;

@@ -26,6 +26,36 @@ rec {
   direnv = super.direnv.overrideAttrs (_: {
     doCheck = false;
   });
+  x20-inputplumber = self.callPackage
+    ({ inputplumber'
+     , fetchFromGitHub
+     , rustPlatform
+     ,
+     }:
+      inputplumber'.overrideAttrs rec {
+        version = "0.83.1";
+
+        src = fetchFromGitHub {
+          owner = "ShadowBlip";
+          repo = "InputPlumber";
+          tag = "v${version}";
+          hash = "sha256-2NAIiIZBi1lZdPPND6VCihThvdHd1aJ2X6ZArinIL2E=";
+        };
+
+        cargoDeps = rustPlatform.fetchCargoVendor {
+          inherit src;
+          hash = "sha256-d5sW/w5JolX20U2OzGHMDcUXi0+hvXV0kKWXD2FfIKA=";
+        };
+      })
+    {
+      inputplumber' = super.jovianPackages.inputplumber;
+    };
+  linux-firmware = super.linux-firmware.overrideAttrs (oldAttrs: {
+      postPatch = ''
+        cp ti/audio/tas2783/1954-0-0-0x8.bin ti/audio/tas2783/1954-0-0x8.bin 
+        cp ti/audio/tas2783/1954-0-0-0xB.bin ti/audio/tas2783/1954-0-0xB.bin 
+      '';
+    });
   age-plugin-yubi25519 = self.callPackage "${packages}/age-plugin-yubi25519.nix" { };
   stevijoAge = age'.withPlugins (plugins: lib.attrsets.attrValues plugins ++ [
     age-plugin-yubi25519
