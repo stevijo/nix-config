@@ -7,6 +7,7 @@ let
   username = config.username;
 in
 {
+  users.groups.tuning = { };
   users.users.${username} = {
     isNormalUser = true;
     description = "Stefan Mayer";
@@ -21,6 +22,7 @@ in
       "uinput"
       "led"
       "decky"
+      "tuning"
     ];
   };
 

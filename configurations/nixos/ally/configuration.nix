@@ -73,16 +73,16 @@ in
         patch = ./0006-ASoC-tas2783-sdw-refuse-playback-when-init-writes-failed.patch;
       }
       {
+        name = "0007-ASoC-tas2783-sdw-power-the-function-up-before-preparing-the-port";
+        patch = ./0007-ASoC-tas2783-sdw-power-the-function-up-before-preparing-the-port.patch;
+      }
+      {
         name = "0010-hid-asus-ally-alias-LED-to-go_s-and-fix-mc_subled";
         patch = ./0010-hid-asus-ally-alias-LED-to-go_s-and-fix-mc_subled.patch;
       }
       {
         name = "0011-hid-asus-ally-add-effect-speed-mode-sysfs";
         patch = ./0011-hid-asus-ally-add-effect-speed-mode-sysfs.patch;
-      }
-      {
-        name = "0012-hid-asus-ally-report-X20-top-right-key-0xa0";
-        patch = ./0012-hid-asus-ally-report-X20-top-right-key-0xa0.patch;
       }
       {
         name = "0013-hid-asus-ally-fix-use-after-free-on-interface-unbind";
@@ -93,8 +93,20 @@ in
         patch = ./0014-hid-asus-ally-scale-rumble-and-vibration-intensity-to-0-100.patch;
       }
       {
-        name = "0015-hid-asus-ally-hold-X20-top-right-key-for-250-ms";
-        patch = ./0015-hid-asus-ally-hold-X20-top-right-key-for-250-ms.patch;
+        name = "0016-HID-asus-ally-remap-QAM-and-AC-buttons-on-ROG-Xbox-Ally-X20";
+        patch = ./0016-HID-asus-ally-remap-QAM-and-AC-buttons-on-ROG-Xbox-Ally-X20.patch;
+      }
+      {
+        name = "0017-HID-asus-ally-reconfigure-the-MCU-only-once-on-resume";
+        patch = ./0017-HID-asus-ally-reconfigure-the-MCU-only-once-on-resume.patch;
+      }
+      {
+        name = "0018-HID-asus-ally-restore-the-gamepad-mode-on-resume";
+        patch = ./0018-HID-asus-ally-restore-the-gamepad-mode-on-resume.patch;
+      }
+      {
+        name = "0019-HID-asus-ally-propagate-ready-check-transport-errors";
+        patch = ./0019-HID-asus-ally-propagate-ready-check-transport-errors.patch;
       }
       {
         name = "0020-asus-armoury-add-ROG-Xbox-Ally-X20-RC74XA-power-limits";
@@ -104,6 +116,7 @@ in
     boot.kernelModules = [
       "hid_nintendo"
       "hid_playstation"
+      "iio_trig_hrtimer"
     ];
 
     boot.kernelParams = [
@@ -112,25 +125,50 @@ in
       "amd_pstate=active"
       "rd.systemd.show_status=false"
       "amdgpu.gttsize=8128"
+      "rd.udev.log_level=3"
+      "rd.systemd.show_status=auto"
     ];
+    boot.consoleLogLevel = 0;
 
     services.udev.extraRules = ''
       # Enables manual GPU clock control in Steam
       # - /sys/class/drm/card0/device/power_dpm_force_performance_level
+      # - /sys/class/drm/card0/device/power_dpm_state
       # - /sys/class/drm/card0/device/pp_od_clk_voltage
-      ACTION=="add", SUBSYSTEM=="pci", DRIVER=="amdgpu", RUN+="${pkgs.coreutils}/bin/chmod a+w /sys/%p/power_dpm_force_performance_level /sys/%p/pp_od_clk_voltage"
+      ACTION=="add", SUBSYSTEM=="pci", DRIVER=="amdgpu", RUN+="${pkgs.coreutils}/bin/chmod a+w /sys/%p/power_dpm_force_performance_level /sys/%p/pp_od_clk_voltage /sys/%p/power_dpm_state"
+      SUBSYSTEM=="leds", RUN+="${pkgs.coreutils}/bin/chmod a+w '/sys/class/leds/%k/brightness'"
+      SUBSYSTEM=="leds", RUN+="${pkgs.coreutils}/bin/chmod a+w '/sys/class/leds/%k/brightness_scale'"
+      SUBSYSTEM=="leds", RUN+="${pkgs.coreutils}/bin/chmod a+w '/sys/class/leds/%k/brightness_startup'"
+      SUBSYSTEM=="leds", RUN+="${pkgs.coreutils}/bin/chmod a+w '/sys/class/leds/%k/effect'"
+      SUBSYSTEM=="leds", RUN+="${pkgs.coreutils}/bin/chmod a+w '/sys/class/leds/%k/enabled'"
+      SUBSYSTEM=="leds", RUN+="${pkgs.coreutils}/bin/chmod a+w '/sys/class/leds/%k/mode'"
+      SUBSYSTEM=="leds", RUN+="${pkgs.coreutils}/bin/chmod a+w '/sys/class/leds/%k/multi_intensity'"
+      SUBSYSTEM=="leds", RUN+="${pkgs.coreutils}/bin/chmod a+w '/sys/class/leds/%k/multi_intensity_startup'"
+      SUBSYSTEM=="leds", RUN+="${pkgs.coreutils}/bin/chmod a+w '/sys/class/leds/%k/speed'"
 
       # https://github.com/ublue-os/bazzite/blob/f5f033424281f88f0a132ec0561a5a5f002faf24/system_files/deck/shared/usr/lib/udev/rules.d/50-ally-fingerprint.rules
       ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{idVendor}=="1c7a", ATTR{idProduct}=="0588", ATTR{power/control}="auto"
     '';
 
-    services.asusd.enable = true;
+
+    systemd.services.restart-inputplumber-after-resume = {
+      enable = true;
+      description = "Restart inputplumber";
+      after = [ "suspend.target" ];
+      wantedBy = [ "suspend.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.systemd}/bin/systemctl restart inputplumber";
+      };
+    };
+
 
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
 
     networking.hostName = "ally";
     networking.networkmanager.enable = true;
+    networking.firewall.enable = false;
 
     time.timeZone = "Europe/Prague";
 
@@ -238,6 +276,7 @@ in
       krename
       gamescope-wsi
       mangohud
+      acl
     ];
 
     programs.firefox.enable = true;

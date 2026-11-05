@@ -6,7 +6,7 @@
 # switches are never enabled.
 #
 # The patch is taken from ublue-os/bazzite (commit c500b43388e3).
-{ lib, ... }:
+{ pkgs, config, ... }:
 
 {
   nixpkgs.overlays = [
@@ -16,4 +16,50 @@
       });
     })
   ];
+
+  # Restart the user PipeWire after the machine woke up again.
+  #
+  # This has to be a system-sleep hook and not a unit ordered after
+  # "suspend.target": that one runs *before* the machine sleeps, not after
+  # it woke up. The hook is called with "pre" before the sleep and with
+  # "post" after the resume.
+  #
+  # With the tas2783 power up fix in the kernel, PipeWire recovers the
+  # stream on its own, so this is only a fallback.
+  environment.etc."systemd/system-sleep/50-restart-pipewire".source = pkgs.writeShellScript "restart-pipewire-after-resume" ''
+    if [ "$1" = "post" ]; then
+      ${pkgs.systemd}/bin/systemctl --user --machine="${config.username}@.host" \
+        restart pipewire pipewire-pulse wireplumber || true
+    fi
+  '';
+
+  services.pipewire = {
+
+    # 1. Increase minimum quantum to prevent buffer underruns
+    extraConfig.pipewire."99-min-quantum" = {
+      "context.properties" = {
+        "default.clock.min-quantum" = 512;
+      };
+    };
+
+    # 2. Add headroom and start delay for AMD SoundWire
+    wireplumber.extraConfig."51-amdsoundwire-fix" = {
+      "monitor.alsa.rules" = [
+        {
+          matches = [
+            {
+              "node.name" = "~alsa_output.platform-amdsoundwire.*";
+            }
+          ];
+          actions = {
+            update-props = {
+              "session.suspend-timeout-seconds" = 0;
+              "api.alsa.headroom" = 1024;
+              "api.alsa.start-delay" = 500;
+            };
+          };
+        }
+      ];
+    };
+  };
 }

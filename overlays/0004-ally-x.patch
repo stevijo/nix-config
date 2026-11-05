@@ -1,32 +1,13 @@
-From 07b6378518d6427f85806b77dbf3b38f3729d605 Mon Sep 17 00:00:00 2001
+From b4501388d4f1eb921cb3981a634a131211c38c6b Mon Sep 17 00:00:00 2001
 From: Stefan Mayer <stevijo.mayer@googlemail.com>
 Date: Wed, 4 Nov 2026 22:17:54 +0100
 Subject: [PATCH 4/4] ally x
 
 ---
- data/devices/rog-ally-series.toml |  7 ------
  data/devices/rog-xbox-ally-x.toml | 42 +++++++++++++++++++++++++++++++
- 2 files changed, 42 insertions(+), 7 deletions(-)
+ 1 files changed, 42 insertions(+), 0 deletions(-)
  create mode 100644 data/devices/rog-xbox-ally-x.toml
 
-diff --git a/data/devices/rog-ally-series.toml b/data/devices/rog-ally-series.toml
-index a1a52b5..f66315b 100644
---- a/data/devices/rog-ally-series.toml
-+++ b/data/devices/rog-ally-series.toml
-@@ -19,13 +19,6 @@ device = "rog_xbox_ally_x"
- variant = "RC73XA"
- friendly_name = "ROG Xbox Ally"
- 
--[[device]]
--dmi.sys_vendor = "ASUS"
--dmi.board_name = "RC74XA"
--device = "rog_xbox_ally_x_20"
--variant = "RC74XA"
--friendly_name = "ROG Xbox Ally"
--
- [gpu_performance]
- driver = "amdgpu"
- 
 diff --git a/data/devices/rog-xbox-ally-x.toml b/data/devices/rog-xbox-ally-x.toml
 new file mode 100644
 index 0000000..aa49c5b
