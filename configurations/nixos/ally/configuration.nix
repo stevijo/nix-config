@@ -45,6 +45,7 @@ in
 
     networking.hostName = "ally";
     networking.networkmanager.enable = true;
+    networking.networkmanager.wifi.powersave = false;
     networking.firewall.enable = false;
 
     services.openssh.enable = true;

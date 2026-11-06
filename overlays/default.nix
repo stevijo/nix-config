@@ -50,23 +50,6 @@ rec {
     {
       inputplumber' = super.jovianPackages.inputplumber;
     };
-  # The kernel asks for the TAS2783 amplifier firmware as
-  # "<subsystem>-<link>-0x<uid>.bin", but linux-firmware only ships the
-  # four field variant. The files also have to be listed in WHENCE, which
-  # is what copy-firmware.sh installs from.
-  linux-firmware = super.linux-firmware.overrideAttrs (oldAttrs: {
-    postPatch = ''
-      cp ti/audio/tas2783/1954-0-0-0x8.bin ti/audio/tas2783/1954-0-0x8.bin
-      cp ti/audio/tas2783/1954-0-0-0xB.bin ti/audio/tas2783/1954-0-0xB.bin
-
-      printf '%s\n' \
-        'File: ti/audio/tas2783/1954-0-0x8.bin' \
-        'File: ti/audio/tas2783/1954-0-0xB.bin' \
-        'Link: 1954-0-0x8.bin -> ti/audio/tas2783/1954-0-0x8.bin' \
-        'Link: 1954-0-0xB.bin -> ti/audio/tas2783/1954-0-0xB.bin' \
-        >> WHENCE
-    '';
-  });
   jovianPackages = super.jovianPackages // {
     steamos-manager = super.jovianPackages.steamos-manager.overrideAttrs (oldAttrs: {
 
