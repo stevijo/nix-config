@@ -1,7 +1,4 @@
-# Audio setup for the Steam session.
-#
-# The Steam Deck UI talks to the sound card through PipeWire, so we use
-# the vendor builds shipped by Jovian instead of the stock nixpkgs ones.
+# Audio setup for the Steam session, using the vendor PipeWire builds.
 { lib, pkgs, ... }:
 
 {
@@ -15,9 +12,7 @@
     wireplumber.package = pkgs.jovianPackages.wireplumber;
   };
 
-  # Point ALSA at the UCM configuration. The default location is the copy
-  # shipped with alsa-lib; setting it explicitly makes sure the UCM
-  # configuration of the running system is used, even when it was patched
-  # (see the tas2783 patch in the ROG Xbox Ally X20 configuration).
+  # Point ALSA at the UCM configuration of the running system, which may
+  # carry patches (see the tas2783 patch in the Ally X20 configuration).
   environment.variables.ALSA_CONFIG_UCM2 = "${pkgs.alsa-ucm-conf}/share/alsa/ucm2";
 }

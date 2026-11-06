@@ -1,4 +1,4 @@
-# User account and home-manager wiring for the ASUS ROG Xbox Ally X20.
+# User account and home-manager wiring.
 { config, flake, lib, ... }:
 
 let
@@ -8,6 +8,7 @@ let
 in
 {
   users.groups.tuning = { };
+
   users.users.${username} = {
     isNormalUser = true;
     description = "Stefan Mayer";
@@ -28,16 +29,15 @@ in
 
   security.sudo.extraRules = [
     {
-      users = [ "stevijo" ];
+      users = [ username ];
       commands = [
         {
           command = "ALL";
-          options = [ "NOPASSWD" ]; # "SETENV" # Adding the following could be a good idea
+          options = [ "NOPASSWD" ];
         }
       ];
     }
   ];
-
 
   home-manager.users.${username} = {
     imports = [ (self + "/configurations/home/stevijo@ally.nix") ];

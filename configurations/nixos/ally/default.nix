@@ -8,29 +8,24 @@ let
 in
 {
   imports = [
-    # Jovian-NixOS: Steam Deck UI, SteamOS flavoured system configuration
-    # and the vendor builds of pipewire/mesa/gamescope.
     self.nixosModules.jovian
 
     ./configuration.nix
     ./audio.nix
     ./boot.nix
     ./graphics.nix
+    ./kernel.nix
+    ./steam.nix
+    ./udev.nix
     ./user.nix
   ];
 
   nixos-unified.sshTarget = "stevijo@ally";
-  environment.systemPackages = with pkgs; [
-    git
-    vim
-  ];
+
+  environment.systemPackages = with pkgs; [ vim ];
 
   services.openssh = {
     enable = true;
-    settings = {
-      PasswordAuthentication = false;
-    };
+    settings.PasswordAuthentication = false;
   };
-
-
 }

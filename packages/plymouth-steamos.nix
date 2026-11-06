@@ -1,12 +1,9 @@
 # The SteamOS boot splash, as a plymouth theme.
 #
-# Jovian ships the same theme in `steamdeck-hw-theme`, but that package is
-# built from the jupiter-hw-support sources, which pull the whole Steam
-# runtime in as a dependency -- and with it the initrd, since the theme
-# ends up in the initrd. This is the same theme with just the three files
-# it actually needs.
-#
-# The image is Valve's, so this is unfree.
+# Jovian ships the same theme in `steamdeck-hw-theme`, but that package
+# pulls in the whole Steam runtime, and with it the initrd. This is the
+# theme with just the three files it needs. The image is Valve's, so this
+# is unfree.
 { fetchurl, runCommand }:
 
 let

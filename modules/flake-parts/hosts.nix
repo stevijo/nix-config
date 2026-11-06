@@ -1,15 +1,8 @@
 # Wires the NixOS configurations in `configurations/nixos`.
 #
-# This replaces `nixos-unified`'s auto-wiring so that
-#
-#  - hosts with a `scalpel.nix` get the scalpel module, and
-#  - hosts listed in `unstableHosts` are built against `nixpkgs-unstable`
-#    instead of the primary `nixpkgs` input.
-#
-# The latter is needed for hosts using Jovian-NixOS: it ships vendor builds
-# of pipewire, wireplumber, mesa and gamescope which are only usable with
-# the nixpkgs revision they were built against (the vendor pipewire is
-# based on 1.6.8, the stable release still carries 1.6.6).
+# Replaces `nixos-unified`'s auto-wiring so that hosts with a `scalpel.nix`
+# get the scalpel module and hosts in `unstableHosts` are built against
+# `nixpkgs-unstable` (needed for the Jovian-NixOS vendor packages).
 { config, lib, inputs, self, ... }:
 
 let
@@ -30,7 +23,6 @@ let
       specialArgs = { prev = sys; };
     };
 
-  # The parts of `nixos-unified`'s `mkLinuxSystem` which are not exported.
   commonModule =
     { lib, ... }:
     {
@@ -56,14 +48,12 @@ let
       home.homeDirectory = lib.mkDefault "/${if pkgs.stdenv.hostPlatform.isDarwin then "Users" else "home"}/${config.home.username}";
     };
 
-  # Builds a host against nixos-unstable. This mirrors
-  # `nixos-unified`'s `mkLinuxSystem`, but with the unstable nixpkgs.
+  # Mirrors `nixos-unified`'s `mkLinuxSystem`, but with the unstable nixpkgs.
   mkUnstableLinuxSystem =
     { home-manager ? false }: mod:
     inputs.nixpkgs-unstable.lib.nixosSystem {
       specialArgs = specialArgsFor.nixos;
       modules = [
-        # The `nixos-unified` metadata module (sshTarget, overrideInputs, ...).
         (inputs.nixos-unified + "/nix/modules/configurations")
         commonModule
         mod
