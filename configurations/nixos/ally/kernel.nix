@@ -92,6 +92,7 @@
 
   boot.extraModprobeConfig = ''
     options mt7921e disable_aspm=1
+    options mt7921_common disable_clc=1
   '';
 
   boot.consoleLogLevel = 0;
