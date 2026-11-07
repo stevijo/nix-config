@@ -104,6 +104,7 @@ in
       mangohud
       iw
       python3
+      wine
     ];
 
     system.stateVersion = "26.05";
