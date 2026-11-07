@@ -102,6 +102,8 @@ in
       krename
       gamescope-wsi
       mangohud
+      iw
+      python3
     ];
 
     system.stateVersion = "26.05";
