@@ -9,8 +9,10 @@ in
 {
   imports = [
     self.nixosModules.jovian
+    inputs.sops-nix.nixosModules.sops
 
     ./configuration.nix
+    ./sops.nix
     ./audio.nix
     ./boot.nix
     ./graphics.nix

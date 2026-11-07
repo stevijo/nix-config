@@ -34,9 +34,21 @@ in
     nix = {
       nixPath = [ "nixpkgs=${flake.inputs."nixpkgs-unstable"}" ];
       registry.nixpkgs.flake = flake.inputs."nixpkgs-unstable";
+      distributedBuilds = true;
+      buildMachines = [
+        {
+            hostName = "router";
+            systems = [ "x86_64-linux" "i686-linux" ];
+            maxJobs = 8;
+            speedFactor = 8;
+            sshUser = "stevijo";
+            sshKey = "/home/stevijo/.ssh/id_ed25519";
+        }
+      ];
 
       settings = {
-        max-jobs = 8;
+        builders-use-substitutes = true;
+        max-jobs = 0;
         experimental-features = [ "nix-command flakes" ];
         trusted-users = [ "root" "@wheel" ];
         download-buffer-size = 524288000;

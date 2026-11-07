@@ -3,6 +3,7 @@ keys:
   - &home-router age1hur9z8gfsj46n5tzdwlj4tgurjsdhh6pj6vtm2uf24q4gsf04agq3mmkh4
   - &laptop age15nmfn24htt4qwk79khts8d7yv0zyntcjpzkss8pcej79ga8ttf5qwnts5u
   - &yubikey ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAAGXGRGgDfeluY1/CjIz0Q745fexf8d/tDLCZ9SwHwZ 
+  - &ally age10juu4c5k9cpak77l5lh7h42pava3c6rzcfx3nhw8j28kwap55psscz6gc9
 creation_rules:
   - path_regex: secrets.yaml$
     key_groups:
@@ -11,3 +12,4 @@ creation_rules:
         - *home-router
         - *yubikey
         - *laptop
+        - *ally
