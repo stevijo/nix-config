@@ -43,6 +43,7 @@ in
           speedFactor = 8;
           sshUser = "stevijo";
           sshKey = "/home/stevijo/.ssh/id_ed25519";
+          supportedFeatures = [ "big-parallel" "kvm" "nixos-test" ];
         }
       ];
 
@@ -116,7 +117,14 @@ in
       mangohud
       iw
       python3
-      wine
+      wineWow64Packages.full
+      winetricks
+      lutris
+      protonup-qt
+      dxvk
+      umu-launcher-unwrapped
+      faugus-launcher
+      (pkgs.bottles.override { removeWarningPopup = true; })
     ];
 
     system.stateVersion = "26.05";
