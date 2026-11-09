@@ -125,6 +125,7 @@ in
       umu-launcher-unwrapped
       faugus-launcher
       (pkgs.bottles.override { removeWarningPopup = true; })
+      heroic
     ];
 
     system.stateVersion = "26.05";
