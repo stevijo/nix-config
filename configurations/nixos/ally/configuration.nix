@@ -37,12 +37,12 @@ in
       distributedBuilds = true;
       buildMachines = [
         {
-            hostName = "router";
-            systems = [ "x86_64-linux" "i686-linux" ];
-            maxJobs = 8;
-            speedFactor = 8;
-            sshUser = "stevijo";
-            sshKey = "/home/stevijo/.ssh/id_ed25519";
+          hostName = "router";
+          systems = [ "x86_64-linux" "i686-linux" ];
+          maxJobs = 8;
+          speedFactor = 8;
+          sshUser = "stevijo";
+          sshKey = "/home/stevijo/.ssh/id_ed25519";
         }
       ];
 

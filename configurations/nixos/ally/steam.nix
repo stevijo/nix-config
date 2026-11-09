@@ -39,20 +39,21 @@ in
 
   jovian.decky-loader = {
     enable = true;
+    enableFHSEnvironment = true;
     user = username;
-    extraPackages = with pkgs; [ 
-        ryzenadj 
-        iw
-        python3
-        getopt
-        networkmanager 
-        curl
-        iproute2
-        systemd
-        sysctl
-        kmod
-        jovianPackages.steamos-manager
-        util-linux
+    extraPackages = with pkgs; [
+      ryzenadj
+      iw
+      python3
+      getopt
+      networkmanager
+      curl
+      iproute2
+      systemd
+      sysctl
+      kmod
+      jovianPackages.steamos-manager
+      util-linux
     ];
   };
 
@@ -62,12 +63,4 @@ in
   xdg.portal.enable = true;
   services.flatpak.enable = true;
 
-  # Steam CEF remote debugging for decky-loader
-  systemd.tmpfiles.settings."steam-cef-remote-debugging"."${
-    config.users.users.${username}.home
-  }/.local/share/Steam/.cef-enable-remote-debugging".f =
-    {
-      user = username;
-      group = "users";
-    };
 }

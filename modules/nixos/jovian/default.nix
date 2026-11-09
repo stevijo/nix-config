@@ -10,6 +10,7 @@
   imports = [
     flake.inputs.jovian.nixosModules.default
     ./audio.nix
+    ./decky-loader.nix
   ];
 
   config = {
