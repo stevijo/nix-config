@@ -40,7 +40,20 @@ in
   jovian.decky-loader = {
     enable = true;
     user = username;
-    extraPackages = with pkgs; [ ryzenadj ];
+    extraPackages = with pkgs; [ 
+        ryzenadj 
+        iw
+        python3
+        getopt
+        networkmanager 
+        curl
+        iproute2
+        systemd
+        sysctl
+        kmod
+        jovianPackages.steamos-manager
+        util-linux
+    ];
   };
 
   hardware.steam-hardware.enable = true;
