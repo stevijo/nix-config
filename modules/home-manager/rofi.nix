@@ -1,7 +1,7 @@
 { ... }:
 
 {
-    homeManager.modules.gui = { pkgs, ... }: {
+  homeManager.modules.gui = { pkgs, ... }: {
 
     programs.rofi = {
       enable = true;

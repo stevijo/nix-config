@@ -5,7 +5,7 @@ let
   inherit (config.homeManager.modules) base kitty neovim shell;
 in
 {
-homeManager.modules.darwin = {
+  homeManager.modules.darwin = {
     imports = [
       base
       kitty
