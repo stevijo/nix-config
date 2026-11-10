@@ -7,7 +7,7 @@
 { inputs, ... }:
 
 {
-  flake.modules.nixos.jovian = { ... }: {
+  nixos.modules.jovian = { ... }: {
     imports = [ inputs.jovian.nixosModules.default ];
 
     jovian.steam.enable = true;

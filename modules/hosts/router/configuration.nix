@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/router" = { config, lib, pkgs, ... }: {
+  nixos.configurations.router.module = { config, lib, pkgs, ... }: {
 
     imports =
       [

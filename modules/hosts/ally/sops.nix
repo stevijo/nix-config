@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/ally" = { config, lib, ... }: {
+  nixos.configurations.ally.module = { config, lib, ... }: {
 
     sops.defaultSopsFile = ./secrets.yaml;
     sops.age.sshKeyPaths = [

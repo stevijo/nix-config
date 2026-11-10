@@ -2,7 +2,7 @@
 { ... }:
 
 {
-  flake.modules.homeManager.base = { config, lib, pkgs, ... }: {
+  homeManager.modules.base = { config, lib, pkgs, ... }: {
     home.homeDirectory = lib.mkDefault "/${
       if pkgs.stdenv.hostPlatform.isDarwin then "Users" else "home"
     }/${config.home.username}";

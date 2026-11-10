@@ -125,18 +125,13 @@ def activate_system_local [ hostData: record, --dry-run=false ] {
     let darwin = $hostData.system in ["aarch64-darwin" "x86_64-darwin"]
     if $darwin {
         let subcommand = if $dry_run { "build" } else { "switch" }
-        log info $"(ansi blue_bold)>>>(ansi reset) sudo darwin-rebuild ($subcommand) --flake ($hostData.flake) ($hostData.nixArgs | str join)"
-        sudo darwin-rebuild $subcommand --flake $hostData.flake ...$hostData.nixArgs
+        log info $"(ansi blue_bold)>>>(ansi reset) sudo darwin-rebuild ($subcommand) --flake ($hostData.flake)"
+        sudo darwin-rebuild $subcommand --flake $hostData.flake
     } else {
         let subcommand = if $dry_run { "dry-activate" } else { "switch" }
-        if $hostData.localPrivilegeMode == "sudo-nixos-rebuild" {
-            let nixosRebuild = "/run/current-system/sw/bin/nixos-rebuild"
-            log info $"(ansi blue_bold)>>>(ansi reset) sudo ($nixosRebuild) ($subcommand) --flake ($hostData.flake) ($hostData.nixArgs | str join)"
-            sudo $nixosRebuild $subcommand --flake $hostData.flake ...$hostData.nixArgs
-        } else {
-            log info $"(ansi blue_bold)>>>(ansi reset) nixos-rebuild ($subcommand) --flake ($hostData.flake) ($hostData.nixArgs | str join) --sudo"
-            nixos-rebuild $subcommand --flake $hostData.flake ...$hostData.nixArgs --sudo
-        }
+        let nixosRebuild = "/run/current-system/sw/bin/nixos-rebuild"
+        log info $"(ansi blue_bold)>>>(ansi reset) sudo ($nixosRebuild) ($subcommand) --flake ($hostData.flake)"
+        sudo $nixosRebuild $subcommand --flake $hostData.flake
     }
 }
 
@@ -145,13 +140,10 @@ def activate_system_remote_ssh [ hostData: record, --dry-run=false ] {
 
     # Copy the flake and the necessary inputs to the remote host.
     nix_copy $data.cleanFlake $"ssh-ng://($hostData.sshTarget)"
-    $hostData.overrideInputs | transpose key value | each { |input|
-        nix_copy $input.value $"ssh-ng://($hostData.sshTarget)"
-    }
 
     # We re-run this activation script, but on the remote host (where it will invoke activate_system_local).
-    log info $'(ansi blue_bold)>>>(ansi reset) ssh -t ($hostData.sshTarget) nix --extra-experimental-features '"nix-command flakes"' run ($hostData.nixArgs | str join) $"($data.cleanFlake)#activate" -- ($hostData.host) --dry-run=($dry_run)'
-    ssh -t $hostData.sshTarget nix --extra-experimental-features '"nix-command flakes"' run ...$hostData.nixArgs $"($data.cleanFlake)#activate" -- ($hostData.host) --dry-run=($dry_run)
+    log info $'(ansi blue_bold)>>>(ansi reset) ssh -t ($hostData.sshTarget) nix --extra-experimental-features '"nix-command flakes"' run $"($data.cleanFlake)#activate" -- ($hostData.host) --dry-run=($dry_run)'
+    ssh -t $hostData.sshTarget nix --extra-experimental-features '"nix-command flakes"' run $"($data.cleanFlake)#activate" -- ($hostData.host) --dry-run=($dry_run)
 }
 
 def nix_copy [ src: string dst: string ] {

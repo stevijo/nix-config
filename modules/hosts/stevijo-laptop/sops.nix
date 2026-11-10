@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/stevijo-laptop" = { config, lib, ... }: {
+  nixos.configurations.stevijo-laptop.module = { config, lib, ... }: {
 
     sops.defaultSopsFile = ./secrets.yaml;
     sops.age.sshKeyPaths = [

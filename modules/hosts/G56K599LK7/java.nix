@@ -14,14 +14,14 @@ let
   });
 in
 {
-  flake.modules.darwin."darwinConfigurations/G56K599LK7" = { pkgs, ... }: {
+  nixDarwin.configurations.G56K599LK7.module = { pkgs, ... }: {
     environment.variables = {
       JAVA_HOME_21 = toString (addZscalerCA pkgs.temurin-bin);
       JAVA_HOME_17 = toString (addZscalerCA pkgs.temurin-bin-17);
     };
   };
 
-  flake.modules.homeManager."stefan.mayer" = { pkgs, ... }: {
+  homeManager.modules."stefan.mayer" = { pkgs, ... }: {
     java = {
       java21 = addZscalerCA pkgs.temurin-bin;
       java17 = addZscalerCA pkgs.temurin-bin-17;

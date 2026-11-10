@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.homeManager.fontconfig = { pkgs, ... }: {
+  homeManager.modules.fontconfig = { pkgs, ... }: {
 
     home.packages = with pkgs; [
       dejavu_fonts

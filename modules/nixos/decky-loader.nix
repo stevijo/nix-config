@@ -8,7 +8,7 @@
 { ... }:
 
 {
-  flake.modules.nixos.decky-loader = { config, lib, pkgs, ... }:
+  nixos.modules.decky-loader = { config, lib, pkgs, ... }:
     let
       inherit (lib)
         mkIf

@@ -2,7 +2,7 @@
 { ... }:
 
 {
-  flake.modules.nixos.home-manager = {
+  nixos.modules.home-manager = {
     home-manager = {
       useGlobalPkgs = true;
       useUserPackages = true;

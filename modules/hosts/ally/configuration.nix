@@ -1,7 +1,7 @@
 { inputs, ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/ally" = { config, lib, pkgs, ... }: {
+  nixos.configurations.ally.module = { config, lib, pkgs, ... }: {
 
     imports = [
       ./_hardware-configuration.nix

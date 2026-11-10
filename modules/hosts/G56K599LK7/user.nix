@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.darwin."darwinConfigurations/G56K599LK7" = { ... }: {
+  nixDarwin.configurations.G56K599LK7.module = { ... }: {
 
     users.users."stefan.mayer".home = "/Users/stefan.mayer";
     username = "stefan.mayer";

@@ -1,34 +1,18 @@
 # The Framework 13 laptop.
 #
 # The host specific settings live in `modules/hosts/stevijo-laptop/`.
-{ config, inputs, ... }:
+{ config, ... }:
 
 let
-  inherit (config.flake.modules.generic) base;
-  inherit (config.flake.modules.nixos) docker home-manager sops sway;
-  inherit (config.flake.modules.homeManager) linux stevijo;
-  sway-home = config.flake.modules.homeManager.sway;
+  inherit (config.nixos.modules) base docker home-manager sops sway;
+  inherit (config.homeManager.modules) linux stevijo;
+  gui = config.homeManager.modules.gui;
 
   stateVersion = "22.11";
 in
 {
   config = {
-    hosts.stevijo-laptop = {
-      system = "nixos";
-      platform = "x86_64-linux";
-      homeManager = inputs.home-manager;
-
-      homeUsers."stevijo" = {
-        inherit stateVersion;
-        modules = [
-          linux
-          stevijo
-          sway-home
-        ];
-      };
-    };
-
-    flake.modules.nixos."nixosConfigurations/stevijo-laptop" = { config, ... }: {
+    nixos.configurations.stevijo-laptop.module = { config, ... }: {
       imports = [
         base
         docker
@@ -42,7 +26,7 @@ in
         imports = [
           linux
           stevijo
-          sway-home
+          gui
         ];
       };
     };

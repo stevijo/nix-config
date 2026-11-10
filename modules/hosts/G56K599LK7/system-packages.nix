@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.darwin."darwinConfigurations/G56K599LK7" = { lib, pkgs, ... }: {
+  nixDarwin.configurations.G56K599LK7.module = { lib, pkgs, ... }: {
 
     fonts.packages = with pkgs; [
       nerd-fonts.droid-sans-mono

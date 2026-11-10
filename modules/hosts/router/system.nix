@@ -3,7 +3,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/router" = { lib, pkgs, ... }: {
+  nixos.configurations.router.module = { lib, pkgs, ... }: {
     environment.systemPackages = with pkgs; [
       git
       acpi

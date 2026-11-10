@@ -1,20 +1,10 @@
 # The sway window manager, and the home-manager side of it.
 #
 # The system side of the sway configuration lives in `modules/nixos/sway.nix`.
-{ config, ... }:
+{ ... }:
 
-let
-  inherit (config.flake.modules.homeManager) gtk-theme rofi swayidle xdg;
-in
 {
-  flake.modules.homeManager.sway = { pkgs, ... }: {
-
-    imports = [
-      gtk-theme
-      rofi
-      swayidle
-      xdg
-    ];
+  homeManager.modules.gui = { pkgs, ... }: {
 
     wayland.windowManager.sway = {
       enable = true;

@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/stevijo-laptop" = { ... }: {
+  nixos.configurations.stevijo-laptop.module = { ... }: {
 
     services.printing.enable = true;
     services.avahi = {

@@ -6,10 +6,10 @@
 { config, ... }:
 
 let
-  inherit (config.flake.modules.nixos) scalpel;
+  inherit (config.nixos.modules) scalpel;
 in
 {
-  flake.modules.nixos."nixosExtensions/stevijo-laptop" = { config, lib, prev, ... }:
+  nixos.configurations.stevijo-laptop.extensions = { config, lib, prev, ... }:
     let
       wgStartup = prev.config.networking.wg-quick.interfaces.wg0.configFile;
     in

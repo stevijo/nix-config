@@ -5,9 +5,9 @@
 { config, inputs, ... }:
 
 {
-  flake.modules.darwin.base = {
+  nixDarwin.modules.base = {
     imports = [
-      config.flake.modules.generic.base
+      config.nixos.modules.base
       inputs.mac-app-util.darwinModules.default
     ];
   };

@@ -2,7 +2,7 @@
 { inputs, ... }:
 
 {
-  flake.modules.nixos.scalpel = {
+  nixos.modules.scalpel = {
     imports = [ inputs.scalpel.nixosModules.scalpel ];
   };
 }

@@ -2,10 +2,10 @@
 { config, inputs, ... }:
 
 let
-  inherit (config.flake.modules.homeManager) base kitty neovim shell;
+  inherit (config.homeManager.modules) base kitty neovim shell;
 in
 {
-  flake.modules.homeManager.darwin = {
+homeManager.modules.darwin = {
     imports = [
       base
       kitty

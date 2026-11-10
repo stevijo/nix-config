@@ -1,7 +1,7 @@
 { inputs, ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/stevijo-laptop" = { lib, ... }: {
+  nixos.configurations.stevijo-laptop.module = { lib, ... }: {
 
     imports = [ inputs.lanzaboote.nixosModules.lanzaboote ];
 

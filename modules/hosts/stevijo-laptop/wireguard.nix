@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/stevijo-laptop" = { lib, pkgs, ... }: {
+  nixos.configurations.stevijo-laptop.module = { lib, pkgs, ... }: {
 
     networking.wireguard.enable = true;
     networking.wg-quick.interfaces = {

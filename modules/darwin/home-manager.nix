@@ -3,7 +3,7 @@
 { ... }:
 
 {
-  flake.modules.darwin.home-manager = {
+  nixDarwin.modules.home-manager = {
     home-manager = {
       useGlobalPkgs = true;
       useUserPackages = true;

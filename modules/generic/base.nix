@@ -8,7 +8,7 @@ let
   overlays = lib.attrValues config.flake.overlays;
 in
 {
-  flake.modules.generic.base = { config, lib, pkgs, ... }: {
+  nixos.modules.base = { config, lib, pkgs, ... }: {
     options = {
       username = lib.mkOption {
         type = lib.types.str;

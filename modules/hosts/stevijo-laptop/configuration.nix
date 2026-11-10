@@ -1,7 +1,7 @@
 { inputs, ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/stevijo-laptop" = { config, lib, pkgs, ... }: {
+  nixos.configurations.stevijo-laptop.module = { config, lib, pkgs, ... }: {
 
     imports =
       [

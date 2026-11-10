@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/ally" = { config, lib, pkgs, ... }:
+  nixos.configurations.ally.module = { config, lib, pkgs, ... }:
     let
       username = config.username;
     in

@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/stevijo-laptop" = { lib, pkgs, ... }: {
+  nixos.configurations.stevijo-laptop.module = { lib, pkgs, ... }: {
 
     environment.variables = {
       NIXOS_OZONE_WL = 1;

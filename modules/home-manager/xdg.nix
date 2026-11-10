@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.homeManager.xdg = { ... }: {
+  homeManager.modules.gui = { ... }: {
 
     xdg.mime.enable = false;
     xdg.userDirs = {

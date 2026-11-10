@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.homeManager.kitty = { pkgs, ... }: {
+    homeManager.modules.kitty = { pkgs, ... }: {
 
     home.packages = with pkgs; [
       nerd-fonts.droid-sans-mono

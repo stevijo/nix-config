@@ -1,10 +1,10 @@
 # Audio setup for the Steam session, using the vendor PipeWire builds.
 #
-# Merged into `flake.modules.nixos.jovian`.
+# Merged into `nixos.modules.jovian`.
 { ... }:
 
 {
-  flake.modules.nixos.jovian = { pkgs, ... }: {
+  nixos.modules.jovian = { pkgs, ... }: {
     services.pulseaudio.enable = false;
 
     services.pipewire = {

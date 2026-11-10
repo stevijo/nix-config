@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.homeManager.gtk-theme = { config, pkgs, ... }: {
+  homeManager.modules.gui = { config, pkgs, ... }: {
 
     dconf.enable = true;
     home.sessionVariables = {

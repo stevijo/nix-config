@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/ally" = { lib, pkgs, ... }: {
+  nixos.configurations.ally.module = { lib, pkgs, ... }: {
 
     services.udev.extraRules = ''
       # manual GPU clock control in Steam

@@ -2,7 +2,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/stevijo-laptop" = { ... }: {
+  nixos.configurations.stevijo-laptop.module = { ... }: {
     users.users.stevijo = {
       extraGroups = [ "video" "docker" "adbusers" "wireshark" "dialout" ];
     };

@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/ally" = { ... }: {
+  nixos.configurations.ally.module = { ... }: {
 
     services.desktopManager.plasma6.enable = true;
     programs.kdeconnect.enable = true;

@@ -6,10 +6,10 @@
 { config, ... }:
 
 let
-  inherit (config.flake.modules.nixos) scalpel;
+  inherit (config.nixos.modules) scalpel;
 in
 {
-  flake.modules.nixos."nixosExtensions/router" = { config, lib, prev, ... }:
+  nixos.configurations.router.extensions = { config, lib, prev, ... }:
     let
       strongswanConfig = prev.config.environment.etc."swanctl/swanctl.conf".source;
       strongswanHash = builtins.hashFile "sha256" strongswanConfig;

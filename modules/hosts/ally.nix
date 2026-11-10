@@ -7,42 +7,33 @@
 { config, inputs, ... }:
 
 let
-  inherit (config.flake.modules.generic) base;
-  inherit (config.flake.modules.nixos) decky-loader home-manager jovian sops;
-  inherit (config.flake.modules.homeManager) linux stevijo;
+  inherit (config.nixos.modules) base decky-loader home-manager jovian sops;
+  inherit (config.homeManager.modules) linux stevijo;
 
   stateVersion = "26.05";
 in
 {
   config = {
-    hosts.ally = {
-      system = "nixos";
-      platform = "x86_64-linux";
+    nixos.configurations.ally = {
       nixpkgs = inputs.nixpkgs-unstable;
       homeManager = inputs.home-manager-unstable;
       sshTarget = "stevijo@ally";
-
-      homeUsers."stevijo" = {
-        inherit stateVersion;
-        modules = [ linux stevijo ];
-      };
-    };
-
-    flake.modules.nixos."nixosConfigurations/ally" = { config, ... }: {
-      imports = [
-        base
-        decky-loader
-        home-manager
-        jovian
-        sops
-      ];
-
-      home-manager.users."stevijo" = {
-        home.stateVersion = stateVersion;
+      module = { config, ... }: {
         imports = [
-          linux
-          stevijo
+          base
+          decky-loader
+          home-manager
+          jovian
+          sops
         ];
+
+        home-manager.users."stevijo" = {
+          home.stateVersion = stateVersion;
+          imports = [
+            linux
+            stevijo
+          ];
+        };
       };
     };
   };

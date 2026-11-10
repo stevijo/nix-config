@@ -2,7 +2,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/ally" = { pkgs, ... }: {
+  nixos.configurations.ally.module = { pkgs, ... }: {
     environment.systemPackages = with pkgs; [ vim ];
 
     services.openssh = {

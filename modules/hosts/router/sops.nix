@@ -2,7 +2,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/router" = { ... }: {
+  nixos.configurations.router.module = { ... }: {
     sops.defaultSopsFile = ./secrets.yaml;
     sops.age.sshKeyPaths = [
       "/home/stevijo/.ssh/id_ed25519"

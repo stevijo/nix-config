@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/ally" = { ... }: {
+  nixos.configurations.ally.module = { ... }: {
 
     nixpkgs.overlays = [
       (final: prev: {

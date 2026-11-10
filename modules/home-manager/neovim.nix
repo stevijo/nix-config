@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.homeManager.neovim = { config, pkgs, lib, ... }:
+  homeManager.modules.neovim = { config, pkgs, lib, ... }:
     let
       cfg = config.java;
     in

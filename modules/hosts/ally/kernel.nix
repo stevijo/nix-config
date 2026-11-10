@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/ally" = { lib, pkgs, ... }: {
+  nixos.configurations.ally.module = { lib, pkgs, ... }: {
 
     boot.kernelPackages = pkgs.jovianPackages.linuxPackages;
 

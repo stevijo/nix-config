@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.homeManager.swayidle = { pkgs, ... }: {
+  homeManager.modules.gui = { pkgs, ... }: {
 
     services.swayidle = {
       enable = true;

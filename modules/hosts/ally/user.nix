@@ -2,7 +2,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/ally" = { config, ... }: {
+  nixos.configurations.ally.module = { config, ... }: {
     users.groups.tuning = { };
 
     users.users.${config.username} = {

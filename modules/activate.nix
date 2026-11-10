@@ -48,25 +48,10 @@
       # rebuild them.
       hosts = lib.mapAttrs
         (name: host: {
-          inherit (host) sshTarget localPrivilegeMode platform;
+          inherit (host) sshTarget platform;
           system = host.platform;
-
-          # The inputs which are pinned when activating this host remotely.
-          overrideInputs = lib.listToAttrs (map
-            (inputName:
-              lib.nameValuePair inputName inputs.${inputName}.outPath
-            )
-            host.overrideInputs);
-
-          nixArgs = lib.concatMap
-            (inputName: [
-              "--override-input"
-              inputName
-              inputs.${inputName}.outPath
-            ])
-            host.overrideInputs;
         })
-        config.hosts;
+        (config.nixos.configurations // config.nixDarwin.configurations);
 
       # The data the activation script needs about the hosts.
       data = {

@@ -2,7 +2,7 @@
 { ... }:
 
 {
-  flake.modules.homeManager."stefan.mayer" = { config, lib, pkgs, ... }:
+  homeManager.modules."stefan.mayer" = { config, lib, pkgs, ... }:
     let
       pkcs11Whitelist = [
         "${pkgs.yubico-piv-tool}/lib/libykcs11.2.7.3.dylib"

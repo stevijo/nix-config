@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.modules.nixos."nixosConfigurations/stevijo-laptop" = { lib, pkgs, ... }: {
+  nixos.configurations.stevijo-laptop.module = { lib, pkgs, ... }: {
 
     programs.gnupg.agent = {
       enable = true;

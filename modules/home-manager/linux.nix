@@ -2,10 +2,10 @@
 { config, ... }:
 
 let
-  inherit (config.flake.modules.homeManager) base fontconfig kitty neovim shell;
+  inherit (config.homeManager.modules) base fontconfig kitty neovim shell;
 in
 {
-  flake.modules.homeManager.linux = {
+  homeManager.modules.linux = {
     imports = [
       base
       fontconfig
