@@ -36,8 +36,6 @@
       jovian.hardware.has.amd.gpu = true;
       jovian.steamos.enableZram = false;
 
-      services.inputplumber.package = lib.mkForce pkgs.x20-inputplumber;
-
       jovian.decky-loader = {
         enable = true;
         enableFHSEnvironment = true;

@@ -8,7 +8,7 @@
 { ... }:
 
 {
-  nixos.modules.decky-loader = { config, lib, pkgs, ... }:
+  nixos.modules.jovian = { config, lib, pkgs, ... }:
     let
       inherit (lib)
         mkIf

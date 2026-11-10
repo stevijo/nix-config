@@ -7,7 +7,7 @@
 { config, inputs, ... }:
 
 let
-  inherit (config.nixos.modules) base decky-loader home-manager jovian sops;
+  inherit (config.nixos.modules) base home-manager jovian sops;
   inherit (config.homeManager.modules) linux stevijo;
 
   stateVersion = "26.05";
@@ -21,7 +21,6 @@ in
       module = { config, ... }: {
         imports = [
           base
-          decky-loader
           home-manager
           jovian
           sops
