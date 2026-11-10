@@ -4,7 +4,7 @@
 { config, inputs, ... }:
 
 let
-  inherit (config.darwin.modules) base home-manager;
+  inherit (config.nixDarwin.modules) base home-manager;
   inherit (config.homeManager.modules) darwin;
   stefan-mayer = config.homeManager.modules."stefan.mayer";
 
