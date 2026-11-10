@@ -7,7 +7,7 @@
 {
   flake.overlays.default = self: super:
     let
-      inherit (super) stdenvAdapters lib;
+      inherit (super) lib;
       system = super.stdenv.hostPlatform.system or super.system;
       age' = super.age;
       unstable = import inputs.nixpkgs-unstable {
@@ -23,6 +23,11 @@
         wlroots
         yubico-piv-tool
         nerd-fonts;
+      strongswan = super.strongswan.overrideAttrs (oldAttrs: {
+        configureFlags = oldAttrs.configureFlags ++ [
+          "--enable-ikev1"
+        ];
+      });
       direnv = super.direnv.overrideAttrs (_: {
         doCheck = false;
       });

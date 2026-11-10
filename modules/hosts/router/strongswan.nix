@@ -24,6 +24,7 @@
       swanctl = {
         connections = {
           fritz = {
+            version = 0;
             proposals = [
               "aes256-sha512-modp1024"
             ];
