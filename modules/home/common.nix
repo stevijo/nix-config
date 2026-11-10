@@ -1,5 +1,0 @@
-{ ... }:
-
-{
-  news.display = "silent";
-}

@@ -1,5 +1,5 @@
 {
-  description = "A home-manager template providing useful tools & settings for Nix-based development";
+  description = "Personal NixOS, nix-darwin and home-manager configuration";
 
   inputs = {
     # Principle inputs (updated by `nix run .#update`)
@@ -13,7 +13,6 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     flake-parts.url = "github:hercules-ci/flake-parts";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
-    nixos-unified.url = "github:srid/nixos-unified";
     sops-nix.url = "github:Mic92/sops-nix";
     scalpel.url = "github:polygon/scalpel";
     mac-app-util.url = "github:hraban/mac-app-util";
@@ -34,11 +33,41 @@
     home-manager-unstable.inputs.nixpkgs.follows = "nixpkgs-unstable";
   };
 
-  # Wired using https://nixos-unified.org/autowiring.html
+  # The dendritic pattern: every file below `modules/` is a top-level
+  # (flake-parts) module of this configuration. Directories whose name starts
+  # with an underscore hold lower-level module content and are skipped.
   outputs = inputs:
-    inputs.nixos-unified.lib.mkFlake
-      {
-        inherit inputs;
-        root = ./.;
-      };
+    let
+      lib = inputs.nixpkgs.lib;
+      modulesPath = ./modules;
+    in
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
+
+      imports = [
+        # Declares the `flake.modules` option, in which the lower-level
+        # modules of this configuration are stored.
+        inputs.flake-parts.flakeModules.modules
+      ] ++ lib.pipe modulesPath [
+        lib.filesystem.listFilesRecursive
+        (lib.filter (lib.hasSuffix ".nix"))
+        # The callPackage files are not modules of this configuration.
+        (lib.filter (path: !(lib.hasSuffix ".pkg.nix" (toString path))))
+        # The directories whose name starts with an underscore hold
+        # lower-level module content, which is not a module either.
+        (lib.filter (
+          path:
+          lib.all
+            (
+              component: !(lib.hasPrefix "_" component)
+            )
+            (lib.path.subpath.components (lib.path.removePrefix modulesPath path))
+        ))
+      ];
+    };
 }

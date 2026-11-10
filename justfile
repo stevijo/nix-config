@@ -16,6 +16,11 @@ update:
 lint:
   nix fmt -- .
 
+# Check the flake
+[group('dev')]
+check:
+  nix flake check
+
 # Manually enter dev shell
 [group('dev')]
 dev:
