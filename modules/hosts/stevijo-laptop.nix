@@ -4,16 +4,15 @@
 { config, ... }:
 
 let
-  inherit (config.nixos.modules) base docker home-manager sops sway;
-  inherit (config.homeManager.modules) linux stevijo;
-  gui = config.homeManager.modules.gui;
+  nixos = config.nixos.modules;
+  home = config.homeManager.modules;
 
   stateVersion = "22.11";
 in
 {
   config = {
     nixos.configurations.stevijo-laptop.module = { config, ... }: {
-      imports = [
+      imports = with nixos; [
         base
         docker
         home-manager
@@ -23,10 +22,10 @@ in
 
       home-manager.users."stevijo" = {
         home.stateVersion = stateVersion;
-        imports = [
+        imports = with home; [
           linux
           stevijo
-          gui
+          sway
         ];
       };
     };

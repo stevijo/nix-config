@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  homeManager.modules.gui = { ... }: {
+  homeManager.modules.sway = { ... }: {
 
     xdg.mime.enable = false;
     xdg.userDirs = {

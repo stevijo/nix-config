@@ -1,10 +1,42 @@
-# The sway window manager, and the home-manager side of it.
-#
-# The system side of the sway configuration lives in `modules/nixos/sway.nix`.
+# The sway window manager: the system side (NixOS) and the user side
+# (home-manager). The rest of the desktop around it (rofi, swayidle, the GTK
+# theme, the XDG directories) lives next to this file and is merged into
+# `homeManager.modules.sway` as well.
 { ... }:
 
 {
-  homeManager.modules.gui = { pkgs, ... }: {
+  nixos.modules.sway = { pkgs, ... }: {
+    services.gnome.gnome-keyring.enable = true;
+    services.gnome.gcr-ssh-agent.enable = false;
+
+    security.polkit.enable = true;
+
+    programs.sway = {
+      enable = true;
+      wrapperFeatures.gtk = true;
+    };
+
+    environment.systemPackages = with pkgs; [
+      kitty
+      i3blocks
+      fontconfig
+      silver-searcher
+      playerctl
+      brightnessctl
+      pulseaudio
+      pipewire
+      wl-clipboard
+      xwayland
+      xdg-desktop-portal
+      xdg-desktop-portal-wlr
+      grim # screenshot functionality
+      slurp # screenshot functionality
+      wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
+      mako # notification system developed by swaywm maintainer
+    ];
+  };
+
+  homeManager.modules.sway = { pkgs, ... }: {
 
     wayland.windowManager.sway = {
       enable = true;
@@ -94,22 +126,22 @@
             tap = "enabled";
           };
         };
-        bars = import ./sway/_config/bar.nix;
-        keybindings = import ./sway/_config/keybindings.nix;
-        modes = import ./sway/_config/modes.nix;
+        bars = import ./_config/bar.nix;
+        keybindings = import ./_config/keybindings.nix;
+        modes = import ./_config/modes.nix;
         window = {
-          commands = import ./sway/_config/commands.nix;
+          commands = import ./_config/commands.nix;
           titlebar = true;
         };
-        startup = import ./sway/_config/startups.nix { inherit pkgs; };
+        startup = import ./_config/startups.nix { inherit pkgs; };
       };
       wrapperFeatures = {
         gtk = false;
       };
     };
 
-    xdg.configFile."sway/scripts".source = ./sway/scripts;
-    xdg.configFile."sway/i3blocks.conf".source = ./sway/i3blocks.conf;
+    xdg.configFile."sway/scripts".source = ./scripts;
+    xdg.configFile."sway/i3blocks.conf".source = ./i3blocks.conf;
 
     home.sessionVariables = {
       XDG_CURRENT_DESKTOP = "GNOME";

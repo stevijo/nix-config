@@ -10,13 +10,17 @@ shared namespace, where they can be composed and reused.
 flake.nix                 the entry point
 justfile                  the commands of this repository
 modules/                  the dendritic tree, every .nix file is a module
-  nixos.nix               the NixOS features and hosts
-  home-manager.nix        the home-manager features
-  nix-darwin.nix          the nix-darwin features and hosts
-  nixos/                  the NixOS features
-  home-manager/           the home-manager features
-  darwin/                 the nix-darwin features
-  generic/                the settings shared by every configuration
+  nixos.nix               the NixOS namespace, builds the NixOS hosts
+  nix-darwin.nix          the nix-darwin namespace, builds the macOS hosts
+  home-manager.nix        the home-manager namespace and its integration
+  base.nix                the settings shared by every configuration
+  profiles.nix            the home-manager profiles of Linux and macOS
+  sway/                   the sway desktop, system and user side
+  shell/                  zsh, starship, direnv, k9s
+  jovian.nix + jovian/    the Steam Deck experience of the Ally
+  neovim.nix + neovim/    neovim and its lua configuration
+  users/                  the home-manager settings of each user
+  docker.nix, sops.nix, scalpel.nix, kitty.nix, fontconfig.nix
   hosts/                  the hosts and their settings
   lib/pkgs.nix            the package set of the per-system outputs
   activate.nix + activate/  the activation script and its module
@@ -54,19 +58,25 @@ namespace per kind of configuration:
 | `nixDarwin.modules`          | the nix-darwin features                           |
 | `nixDarwin.configurations`   | the nix-darwin hosts                              |
 
-A feature is written by the module which implements it:
+The tree is organised by feature, not by kind of configuration. A feature is
+written by the module which implements it, and that module sets every kind of
+configuration the feature touches:
 
 ```nix
-# modules/nixos/docker.nix
+# modules/sway/sway.nix
 {
-  nixos.modules.docker = {
-    virtualisation.docker.enable = true;
+  nixos.modules.sway = { ... }: {
+    programs.sway.enable = true;
+  };
+
+  homeManager.modules.sway = { ... }: {
+    wayland.windowManager.sway.enable = true;
   };
 }
 ```
 
 A feature can be written by more than one file, in which case the modules
-are merged. The options are declared next to the features they hold, in
+are merged (`modules/sway/rofi.nix` adds to `homeManager.modules.sway`). The options are declared next to the features they hold, in
 `modules/nixos.nix`, `modules/home-manager.nix` and `modules/nix-darwin.nix`,
 which also build the configurations of the flake.
 

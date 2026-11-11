@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  homeManager.modules.gui = { config, pkgs, ... }: {
+  homeManager.modules.sway = { config, pkgs, ... }: {
 
     dconf.enable = true;
     home.sessionVariables = {

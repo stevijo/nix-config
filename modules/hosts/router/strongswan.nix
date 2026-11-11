@@ -3,6 +3,15 @@
 {
   nixos.configurations.router.module = { lib, pkgs, ... }: {
 
+    nixpkgs.overlays = [
+      (self: super: {
+        strongswan = super.strongswan.overrideAttrs (oldAttrs: {
+          configureFlags = oldAttrs.configureFlags ++ [
+            "--enable-ikev1"
+          ];
+        });
+      })
+    ];
 
     environment.systemPackages = with pkgs; [
       strongswan

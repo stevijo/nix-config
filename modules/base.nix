@@ -1,13 +1,30 @@
-# Settings shared by every NixOS (and nix-darwin) configuration.
+# The settings shared by every configuration: NixOS, nix-darwin and
+# home-manager.
 #
-# nix-darwin shares nixpkgs' module system, so `modules/darwin/base.nix`
-# reuses this module unchanged.
+# nix-darwin shares nixpkgs' module system, so its base reuses the NixOS base
+# unchanged.
 { config, inputs, lib, ... }:
 
 let
   overlays = lib.attrValues config.flake.overlays;
+  nixosBase = config.nixos.modules.base;
 in
 {
+  nixDarwin.modules.base = {
+    imports = [
+      nixosBase
+      inputs.mac-app-util.darwinModules.default
+    ];
+  };
+
+  homeManager.modules.base = { config, lib, pkgs, ... }: {
+    home.homeDirectory = lib.mkDefault "/${
+      if pkgs.stdenv.hostPlatform.isDarwin then "Users" else "home"
+    }/${config.home.username}";
+
+    news.display = "silent";
+  };
+
   nixos.modules.base = { config, lib, pkgs, ... }: {
     options = {
       username = lib.mkOption {
