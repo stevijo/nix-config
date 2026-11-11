@@ -11,6 +11,7 @@
         ssh-to-age
         just
         nixd
+        nixpkgs-fmt
       ];
     };
   };
