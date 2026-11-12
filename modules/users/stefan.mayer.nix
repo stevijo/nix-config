@@ -11,13 +11,13 @@
     {
       programs.zsh = {
         history = {
-          path = lib.mkDefault "/${if pkgs.stdenv.isDarwin then "Users" else "home"}/stefan.mayer/.histfile";
+          path = lib.mkDefault "/${if pkgs.stdenv.hostPlatform.isDarwin then "Users" else "home"}/stefan.mayer/.histfile";
         };
         envExtra =
           let
             cfg = config.services.ssh-agent;
             socketPath =
-              if pkgs.stdenv.isDarwin then
+              if pkgs.stdenv.hostPlatform.isDarwin then
                 "$(${lib.getExe pkgs.getconf} DARWIN_USER_TEMP_DIR)/${cfg.socket}"
               else
                 "$XDG_RUNTIME_DIR/${cfg.socket}";

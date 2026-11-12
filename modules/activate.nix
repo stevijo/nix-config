@@ -88,10 +88,10 @@
           pkgs.hostname
           inputs'.home-manager.packages.default
         ]
-        ++ lib.optionals (!pkgs.stdenv.isDarwin) [
+        ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) [
           pkgs.nixos-rebuild
         ]
-        ++ lib.optionals (pkgs.stdenv.isDarwin) [
+        ++ lib.optionals (pkgs.stdenv.hostPlatform.isDarwin) [
           inputs'.nix-darwin.packages.default # Provides darwin-rebuild
         ];
         extraBuildCommand = ''
