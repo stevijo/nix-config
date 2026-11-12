@@ -99,21 +99,13 @@
         '';
       };
 
-      # The same script, but running `nixos-rebuild` through `sudo`.
-      noSudoActivate = activate.overrideAttrs (old: {
-        buildCommand = old.buildCommand + ''
-          ${pkgs.gnused}/bin/sed -i -E 's/(nixos-rebuild.*) --sudo/sudo \1/g' activate.nu
-          ${pkgs.gnused}/bin/sed -i -E 's/#activate/#no-sudo-activate/g' activate.nu
-        '';
-      });
     in
     {
       packages.activate = activate;
-      packages.no-sudo-activate = noSudoActivate;
 
       apps.default = {
         type = "app";
-        program = "${noSudoActivate}/bin/activate.nu";
+        program = "${activate}/bin/activate.nu";
         meta.description = "Activate the configuration of this or another host";
       };
     };
