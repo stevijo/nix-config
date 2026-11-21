@@ -13,7 +13,6 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     sops-nix.url = "github:Mic92/sops-nix";
-    scalpel.url = "github:polygon/scalpel";
     mac-app-util.url = "github:hraban/mac-app-util";
 
     nix-index-database.url = "github:nix-community/nix-index-database";

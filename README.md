@@ -20,11 +20,15 @@ modules/                  the dendritic tree, every .nix file is a module
   jovian.nix + jovian/    the Steam Deck experience of the Ally
   neovim.nix + neovim/    neovim and its lua configuration
   users/                  the home-manager settings of each user
-  docker.nix, sops.nix, scalpel.nix, kitty.nix, fontconfig.nix
+  docker.nix, sops.nix, kitty.nix, fontconfig.nix
+  firewall.nix            the nftables rulesets of the routers
+  vpp.nix + _vpp/         the module of VPP, which is not in nixpkgs yet, and
+                          the overlay of its patched package
   hosts/                  the hosts and their settings
   lib/pkgs.nix            the package set of the per-system outputs
   activate.nix + activate/  the activation script and its module
   packages.nix + packages/  the packages and their callPackage files
+  scripts/               the check of the configurations of the routers
   devshell.nix, update.nix, formatter.nix, overlays.nix
 ```
 
@@ -102,8 +106,8 @@ and to activate it: the `platform`, the `nixpkgs` and `homeManager` to build
 it with, and the `sshTarget` used to activate it remotely.
 
 A host may also have an `extensions` module. It is applied after the host
-itself and gets `prev` bound to the host without it, which is how the scalpel
-transformation reads the file it replaces.
+itself and gets `prev` bound to the host without it, which is how the
+templates of the secrets read the file they replace.
 
 The home-manager configuration of a host is part of its system: home-manager
 runs inside NixOS and nix-darwin, so activating a host activates the home
@@ -115,6 +119,58 @@ configuration of its users as well.
 | `ally`           | nixos      | x86_64-linux   | runs nixos-unstable, for the Jovian vendor packages |
 | `stevijo-laptop` | nixos      | x86_64-linux   | the Framework 13                               |
 | `G56K599LK7`     | nix-darwin | aarch64-darwin | the macOS machine                              |
+| `vyos`           | nixos      | x86_64-linux   | the router at the edge of the network, which runs the packet processor |
+
+### The secrets of the routers
+
+The public addresses of the routers, the prefixes of the provider, the number
+of the autonomous system and the keys are not part of the configuration. They
+live in the encrypted file `modules/hosts/<host>/secrets.yaml`, which sops
+writes to `/run/secrets` when the system starts.
+
+The configuration files of the services are written with placeholders instead
+of the values, and the templates of sops rewrite them with the secrets when
+the system starts, under `/run/secrets/rendered`. The ruleset of nftables is
+the exception: it is written by the unit, so the unit is replaced by the one
+which reads the rendered file.
+
+The addresses of the interfaces are set by the units of systemd, which read
+them from the secrets when they run, because the addresses themselves cannot
+be part of the configuration of an interface.
+
+### The console of the routers
+
+The routers are only reachable over the network, and the faster-router is
+only reachable over its own public address, so the console is the way in
+when the network is down.
+
+The console is the serial port of the machine: the port of the machine
+(`ttyS0`), which is the port of a virtual machine and of a server, and the
+port of the management controller (`ttyUSB0`), which is reached with IPMI.
+The kernel writes to both of them and there is a getty on each of them.
+
+The account of the console is `stevijo`, with the key of the age key, which
+the router needs anyway to decrypt its secrets. Its password is the secret
+`console-password`, which is set on the account when the system starts.
+
+```sh
+ipmitool -I lanplus -U <user> sol activate   # the console of the controller
+```
+
+The age key has to be on the router before the first activation, otherwise
+the secrets cannot be decrypted and the activation fails. It is the key of
+the user, at `/home/stevijo/.ssh/id_ed25519`.
+
+### The package of VPP
+
+The package of VPP is patched: the patches of VyOS and the ones of this
+configuration are applied to it. The patch of VyOS is a list which is fetched
+with the sources, the patches of this configuration live in
+`modules/packages/vpp/`.
+
+The patch is applied with an overlay, which is only added to the systems which
+enable the service of VPP. The package is built from the sources and takes a
+long time, so the systems which do not use it do not pull it in.
 
 ## Applying the configuration
 

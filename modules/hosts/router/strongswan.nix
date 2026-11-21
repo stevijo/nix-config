@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  nixos.configurations.router.module = { lib, pkgs, ... }: {
+  nixos.configurations.router.module = { config, lib, pkgs, ... }: {
 
     nixpkgs.overlays = [
       (self: super: {
@@ -42,13 +42,13 @@
             ];
             local = {
               home = {
-                id = "!!REMOTE-LOCAL!!";
+                id = "${config.sops.placeholder."remote-local"}";
                 auth = "psk";
               };
             };
             remote = {
               fritz = {
-                id = "!!REMOTE-FRITZ!!";
+                id = "${config.sops.placeholder."remote-fritz"}";
                 auth = "psk";
               };
             };
@@ -70,10 +70,10 @@
           ike = {
             home = {
               id = {
-                "1" = "!!REMOTE-FRITZ!!";
-                "2" = "!!REMOTE-LOCAL!!";
+                "1" = "${config.sops.placeholder."remote-fritz"}";
+                "2" = "${config.sops.placeholder."remote-local"}";
               };
-              secret = "!!IPSEC-FRITZ!!";
+              secret = "${config.sops.placeholder."ikev-fritz"}";
             };
           };
         };

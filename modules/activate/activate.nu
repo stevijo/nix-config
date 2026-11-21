@@ -41,6 +41,19 @@ def parseFlakeOutputRef [ spec: string ] {
     }
 }
 
+# Parse "host[:1234]" into { port: "1234", host: "host" }
+#
+# localhost hosts are ignored (null'ified)
+def parseSshTarget [ spec: string ] {
+    let parts = $spec | split row ":"
+    if ($parts | length) == 1 {
+        { port: null host: $parts.0 }
+    } else {
+        { port: $parts.1 host: $parts.0 }
+    }
+}
+
+
 # The reference to activate, when none was given on the command line.
 #
 # On NixOS and macOS the system configuration of this machine is activated,
@@ -138,12 +151,20 @@ def activate_system_local [ hostData: record, --dry-run=false ] {
 def activate_system_remote_ssh [ hostData: record, --dry-run=false ] {
     log info $"Activating (ansi purple_reverse)remotely(ansi reset) on ($hostData.sshTarget)"
 
+    let sshTarget = parseSshTarget $hostData.sshTarget
+
     # Copy the flake and the necessary inputs to the remote host.
     nix_copy $data.cleanFlake $"ssh-ng://($hostData.sshTarget)"
 
+    let sshParams = if $sshTarget.port != null { 
+      [ ("-p " + $sshTarget.port) $sshTarget.host ]
+    } else { 
+      [ $sshTarget.host ]
+    }
+
     # We re-run this activation script, but on the remote host (where it will invoke activate_system_local).
-    log info $'(ansi blue_bold)>>>(ansi reset) ssh -t ($hostData.sshTarget) nix --extra-experimental-features '"nix-command flakes"' run $"($data.cleanFlake)#activate" -- ($hostData.host) --dry-run=($dry_run)'
-    ssh -t $hostData.sshTarget nix --extra-experimental-features '"nix-command flakes"' run $"($data.cleanFlake)#activate" -- ($hostData.host) --dry-run=($dry_run)
+    log info $'(ansi blue_bold)>>>(ansi reset) ssh -t ($sshParams | str join) nix --extra-experimental-features '"nix-command flakes"' run $"($data.cleanFlake)#activate" -- ($hostData.host) --dry-run=($dry_run)'
+    ssh -t ...$sshParams nix --extra-experimental-features '"nix-command flakes"' run $"($data.cleanFlake)#activate" -- ($hostData.host) --dry-run=($dry_run)
 }
 
 def nix_copy [ src: string dst: string ] {

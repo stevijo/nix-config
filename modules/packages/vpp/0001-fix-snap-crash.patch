@@ -1,0 +1,25 @@
+From ee01296c039b21da2b670f7c91ff4451a523436b Mon Sep 17 00:00:00 2001
+From: Stefan Mayer <stevijo.mayer@googlemail.com>
+Date: Sat, 21 Nov 2026 19:04:01 +0100
+Subject: [PATCH] fix snap crash
+
+---
+ vnet/snap/snap.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/vnet/snap/snap.h b/vnet/snap/snap.h
+index 028df4ede..d65aaa81f 100644
+--- a/vnet/snap/snap.h
++++ b/vnet/snap/snap.h
+@@ -152,6 +152,8 @@ snap_header_get_oui (snap_header_t * h)
+ always_inline snap_protocol_info_t *
+ snap_get_protocol_info (snap_main_t * sm, snap_header_t * h)
+ {
++  if (PREDICT_FALSE (vec_len (sm->protocols) == 0))
++    return 0;
+   snap_oui_and_protocol_t key;
+   uword *p;
+ 
+-- 
+2.54.0
+
