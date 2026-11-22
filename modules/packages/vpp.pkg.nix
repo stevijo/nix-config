@@ -84,6 +84,7 @@ vpp.overrideAttrs (old: rec {
   # VyOS.
   patches = [
     ./vpp/0001-fix-snap-crash.patch
+    ./vpp/0033-increase-ring-size-for-lcp-interfaces.patch
     ./vpp/0001-fix-dispatch-trace.patch
     ./vpp/0002-add-chacha20-support.patch
   ];

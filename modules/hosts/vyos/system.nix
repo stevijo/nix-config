@@ -86,6 +86,10 @@
     # The CPU settings of the VyOS configuration: the cores 2 to 7 are
     # reserved for the workers of VPP, and the mitigations of the kernel are
     # disabled.
+    #
+    # The cores which are reserved are the ones which the processor of the
+    # packets uses, so the interrupts of the network have to be kept away
+    # from them, which the service below does.
     boot.kernelParams = [
       "isolcpus=2-7"
       "nohz_full=2-7"
@@ -96,6 +100,87 @@
       "console=ttyUSB0,115200n8"
       "console=ttyS0,115200n8"
     ];
+
+    # The interrupts of the network interfaces are moved to the cores which
+    # the processor of the packets does not use, so that they do not
+    # disturb the packets which are processed.
+    #
+    # The cores which the processor uses are the ones which the kernel
+    # isolates, so the service reads them from the command line of the
+    # kernel and the two settings cannot go out of sync.
+    #
+    # The interrupts of the interfaces are not written down: the service
+    # finds them in the system, through the devices of the interfaces which
+    # are on the bus of the PCI. The interfaces which the kernel makes, like
+    # the pairs with the processor of the packets, have no interrupts of
+    # their own.
+    systemd.services.irq-pinning = {
+      description = "The interrupts of the network interfaces are kept away from the cores of the processor of the packets";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = "${pkgs.writeShellScript "irq-pinning" ''
+          # The cores which the kernel isolates are the ones which the
+          # processor of the packets uses.
+          isolated=$(sed -n "s/.*[^a-z]isolcpus=\([^ ]*\).*/\1/p" /proc/cmdline)
+          if [ -z "$isolated" ]; then
+            exit 0
+          fi
+
+          # The list of the isolated cores.
+          cores=""
+          for range in $(echo "$isolated" | tr "," " "); do
+            case "$range" in
+              *-*) cores="$cores $(seq "''${range%-*}" "''${range#*-}" | tr "\n" " ")" ;;
+              *) cores="$cores $range" ;;
+            esac
+          done
+
+          # The mask of the cores which are not isolated.
+          cpus=$(grep -c ^processor /proc/cpuinfo)
+          mask=0
+          for cpu in $(seq 0 $((cpus - 1))); do
+            case " $cores " in
+              *" $cpu "*) ;;
+              *) mask=$((mask | 1 << cpu)) ;;
+            esac
+          done
+          mask=$(printf "%x" $mask)
+
+          # The interfaces of the network are the ones which have a device
+          # on the bus of the PCI.
+          for interface in /sys/class/net/*; do
+            device=$(readlink -f "$interface/device" 2>/dev/null || true)
+            if [ -z "$device" ]; then
+              continue
+            fi
+
+            # The interrupts of a device are the ones of the device of the
+            # PCI which holds it, which is the parent of the device of the
+            # interface.
+            while [ ! -d "$device/msi_irqs" ]; do
+              parent=$(dirname "$device")
+              if [ "$parent" = "$device" ]; then
+                break
+              fi
+              device=$parent
+            done
+            if [ ! -d "$device/msi_irqs" ]; then
+              continue
+            fi
+
+            for irq in "$device"/msi_irqs/*; do
+              if [ ! -e "$irq" ]; then
+                continue
+              fi
+              echo "$mask" > "/proc/irq/$(basename "$irq")/smp_affinity" || true
+            done
+          done
+        ''}";
+      };
+    };
 
     # The name server of the VyOS configuration.
     networking.nameservers = [ "1.1.1.1" ];

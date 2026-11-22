@@ -227,7 +227,12 @@
         # the card by its place in the bus as well.
         matchConfig.MACAddress = "e8:eb:d3:2b:1f:14";
         matchConfig.Path = "pci-*";
-        linkConfig.Name = "eth2";
+        linkConfig = {
+          Name = "eth2";
+
+          RxBufferSize = 4096;
+          TxBufferSize = 4096;
+        };
       };
       "10-vyos-vppgre0" = {
         matchConfig.OriginalName = "vppgre0";
@@ -238,5 +243,6 @@
         linkConfig.Name = "eth5";
       };
     };
+
   };
 }

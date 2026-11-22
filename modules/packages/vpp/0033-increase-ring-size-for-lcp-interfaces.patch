@@ -1,0 +1,27 @@
+From dd046d2a1ee62d7c707e5c3621572ea4bcbc8f18 Mon Sep 17 00:00:00 2001
+From: Stefan Mayer <stevijo.mayer@gmail.com>
+Date: Tue, 18 Aug 2026 14:51:30 +0200
+Subject: [PATCH] increase ring size for lcp interfaces
+
+---
+ plugins/linux-cp/lcp_interface.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/plugins/linux-cp/lcp_interface.c b/plugins/linux-cp/lcp_interface.c
+index 2528eb1ae..157c893a1 100644
+--- a/plugins/linux-cp/lcp_interface.c
++++ b/plugins/linux-cp/lcp_interface.c
+@@ -1024,8 +1024,8 @@ lcp_itf_pair_create (u32 phy_sw_if_index, u8 *host_if_name,
+ 	.id = ~0,
+ 	.auto_id_offset = 4096,
+ 	.sw_if_index = ~0,
+-	.rx_ring_sz = 256,
+-	.tx_ring_sz = 256,
++	.rx_ring_sz = 4096,
++	.tx_ring_sz = 4096,
+ 	.host_if_name = host_if_name,
+ 	.host_namespace = 0,
+ 	.rv = 0,
+-- 
+2.47.3
+
