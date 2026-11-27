@@ -10,6 +10,7 @@
 , fetchgit
 , gnused
 , lib
+, systemd
 }:
 let
   # The data plane development of the release, with the driver of the cards of
@@ -35,7 +36,10 @@ vpp.overrideAttrs (old: rec {
       input:
       if input ? name && lib.hasPrefix "dpdk-" input.name then dpdk' else input
     )
-    old.buildInputs;
+    old.buildInputs
+    # The library of systemd is needed for the support of the notification of
+    # the readiness of the processor of the packets.
+    ++ [ systemd ];
 
   # The patches of VyOS. They are applied in `prePatch`, because they are
   # patches of the release and not of the derivation.
@@ -47,6 +51,11 @@ vpp.overrideAttrs (old: rec {
   };
 
   nativeBuildInputs = old.nativeBuildInputs ++ [ gnused ];
+
+  # The processor of the packets tells systemd when it is ready, so that the
+  # services which wait for it start after it. The support of it is built
+  # with the library of systemd.
+  cmakeFlags = old.cmakeFlags ++ [ "-DVPP_ENABLE_SYSTEMD_NOTIFY=ON" ];
 
   env.NIX_CFLAGS_COMPILE = toString [
     "-Wno-error=maybe-uninitialized"
@@ -64,13 +73,28 @@ vpp.overrideAttrs (old: rec {
             continue
         elif [ "$name" = "0011-build-Fixed-compatibility-with-build-on-Debian-12-an.patch" ]; then
             continue
-        elif [ "$name" = "0022-vlib-add-optional-systemd-notify-support-for-service.patch" ]; then
-            continue
         elif [ "$name" = "0023-linux-cp-T8116-skip-SA-operations-for-non-VPP-interf.patch" ]; then
             continue
         elif [ "$name" = "0024-T7860-IPv6-ICMP-RA-punt-shortcut-36.patch" ]; then
             continue
         elif [ "$name" = "0027-linux-cp-T8251-sync-VPP-IPsec-SA-counters-to-Linux-X.patch" ]; then
+            continue
+        fi
+        if [ "$name" = "0022-vlib-add-optional-systemd-notify-support-for-service.patch" ]; then
+            # The patch has the file of the root of the sources, which is the
+            # Makefile of the distribution, and the files of the sources, so it
+            # is applied from the root of them and not from the sources.
+            #
+            # The Makefile is not built here, the processor of the packets is
+            # built with cmake, and the hunks of it do not fit the release:
+            # they are left out. The rest of the patch fits the release
+            # exactly, and it is applied without the fuzz, so that it is
+            # applied cleanly.
+            newPatch=$PWD/patches/vpp/$name
+            awk '/^diff --git /{ skip = ($0 ~ /a\/Makefile b\/Makefile$/) } !skip' $patch > $newPatch
+            cd ..
+            patch -p1 --fuzz=0 < $newPatch
+            cd -
             continue
         fi
         newPatch=patches/vpp/$name
@@ -87,5 +111,6 @@ vpp.overrideAttrs (old: rec {
     ./vpp/0033-increase-ring-size-for-lcp-interfaces.patch
     ./vpp/0001-fix-dispatch-trace.patch
     ./vpp/0002-add-chacha20-support.patch
+    ./vpp/0034-spread-ipsec-sa-over-workers.patch
   ];
 })

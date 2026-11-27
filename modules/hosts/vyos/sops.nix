@@ -1,9 +1,3 @@
-# The secrets of the faster-router.
-#
-# The public addresses of the router, the prefix of the provider and the
-# number of the autonomous system are kept here, so that they do not end up
-# in the repository. They are written into the configurations of FRR, of
-# swanctl and of nftables by the scalpel transformation.
 { ... }:
 
 {

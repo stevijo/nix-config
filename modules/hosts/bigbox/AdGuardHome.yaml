@@ -1,0 +1,358 @@
+http:
+  pprof:
+    port: 6060
+    enabled: false
+  doh:
+    routes:
+      - GET /dns-query
+      - POST /dns-query
+      - GET /dns-query/{ClientID}
+      - POST /dns-query/{ClientID}
+    insecure_enabled: false
+  address: 0.0.0.0:3000
+  session_ttl: 30d
+users:
+  - name: stevijo
+    password: $2a$10$3l7hnJe2oRvffgErLRfu4.JqLGJxw/9lGel1TazIpFJUzuvcB65c2
+auth_attempts: 5
+block_auth_min: 15
+http_proxy: ""
+language: en
+theme: auto
+dns:
+  bind_hosts:
+    - 0.0.0.0
+  port: 53
+  anonymize_client_ip: false
+  ratelimit: 0
+  ratelimit_subnet_len_ipv4: 24
+  ratelimit_subnet_len_ipv6: 56
+  ratelimit_whitelist: []
+  refuse_any: true
+  upstream_dns:
+    - https://cloudflare-dns.com/dns-query
+    - https://dns.quad9.net/dns-query
+  upstream_dns_file: ""
+  bootstrap_dns:
+    - 9.9.9.10
+    - 2620:fe::10
+    - 2620:fe::fe:10
+  fallback_dns: []
+  upstream_mode: parallel
+  fastest_timeout: 1s
+  allowed_clients: []
+  disallowed_clients: []
+  blocked_hosts:
+    - version.bind
+    - id.server
+    - hostname.bind
+  trusted_proxies:
+    - 127.0.0.0/8
+    - ::1/128
+  cache_enabled: true
+  cache_size: 1048576000
+  cache_ttl_min: 0
+  cache_ttl_max: 0
+  cache_optimistic: false
+  cache_optimistic_answer_ttl: 30s
+  cache_optimistic_max_age: 12h
+  bogus_nxdomain: []
+  aaaa_disabled: false
+  enable_dnssec: true
+  edns_client_subnet:
+    custom_ip: ""
+    enabled: false
+    use_custom: false
+  max_goroutines: 300
+  handle_ddr: true
+  ipset: []
+  ipset_file: ""
+  bootstrap_prefer_ipv6: false
+  upstream_timeout: 10s
+  private_networks: []
+  use_private_ptr_resolvers: false
+  local_ptr_upstreams: []
+  use_dns64: false
+  dns64_prefixes:
+    - !!prefix-dns64!!
+  serve_http3: false
+  use_http3_upstreams: false
+  serve_plain_dns: true
+  hostsfile_enabled: true
+  pending_requests:
+    enabled: true
+tls:
+  enabled: false
+  server_name: ""
+  force_https: false
+  port_https: 443
+  port_dns_over_tls: 853
+  port_dns_over_quic: 853
+  port_dnscrypt: 0
+  dnscrypt_config_file: ""
+  certificate_chain: ""
+  private_key: ""
+  certificate_path: ""
+  private_key_path: ""
+  strict_sni_check: false
+querylog:
+  dir_path: ""
+  ignored: []
+  interval: 1d
+  size_memory: 1000
+  enabled: true
+  ignored_enabled: false
+  file_enabled: true
+statistics:
+  dir_path: ""
+  ignored: []
+  interval: 1d
+  enabled: true
+  ignored_enabled: false
+filters:
+  - enabled: true
+    url: https://big.oisd.nl
+    name: OISD
+    id: 1663190507
+whitelist_filters:
+  - enabled: true
+    url: https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/whitelist.txt
+    name: Pi Hole Whitelist
+    id: 1663381828
+  - enabled: true
+    url: https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/referral-sites.txt
+    name: Pi Hole Referal Whitelist
+    id: 1663381829
+user_rules: []
+dhcp:
+  enabled: false
+  interface_name: ""
+  local_domain_name: lan
+  dhcpv4:
+    gateway_ip: ""
+    subnet_mask: ""
+    range_start: ""
+    range_end: ""
+    lease_duration: 86400
+    icmp_timeout_msec: 1000
+    options: []
+  dhcpv6:
+    range_start: ""
+    lease_duration: 86400
+    ra_slaac_only: false
+    ra_allow_slaac: false
+filtering:
+  blocking_ipv4: ""
+  blocking_ipv6: ""
+  blocked_services:
+    schedule:
+      time_zone: UTC
+    ids: []
+  protection_disabled_until: null
+  safe_search:
+    enabled: false
+    bing: true
+    duckduckgo: true
+    ecosia: true
+    google: true
+    pixabay: true
+    yandex: true
+    youtube: true
+  blocking_mode: default
+  parental_block_host: family-block.dns.adguard.com
+  safebrowsing_block_host: standard-block.dns.adguard.com
+  rewrites:
+    - domain: yeelight1.lan
+      answer: 192.168.11.251
+      enabled: true
+    - domain: yeelight2.lan
+      answer: 192.168.11.250
+      enabled: true
+    - domain: yeelight3.lan
+      answer: 192.168.11.252
+      enabled: true
+    - domain: yeelight4.lan
+      answer: 192.168.11.249
+      enabled: true
+    - domain: lgwebostv.lan
+      answer: 192.168.178.100
+      enabled: true
+    - domain: nfs-files.lan
+      answer: 192.168.179.1
+      enabled: true
+    - domain: rockrobo.lan
+      answer: 192.168.11.247
+      enabled: true
+    - domain: rockrobo
+      answer: 192.168.11.247
+      enabled: true
+    - domain: proxmox.lan
+      answer: 192.168.178.10
+      enabled: true
+    - domain: '*.stevijo.me'
+      answer: 192.168.178.20
+      enabled: true
+    - domain: '*.stevijo.me'
+      answer: !!ipv6-cluster!!
+      enabled: true
+    - domain: remote.stevijo.me
+      answer: A
+      enabled: true
+    - domain: ts.stevijo.me
+      answer: A
+      enabled: true
+    - domain: mikrotik.stevijo.me
+      answer: 192.168.178.5
+      enabled: true
+    - domain: mikrotik.stevijo.me
+      answer: !!prefix-be00-host!!
+      enabled: true
+    - domain: proxmox.stevijo.me
+      answer: 192.168.178.10
+      enabled: true
+    - domain: proxmox.stevijo.me
+      answer: !!ipv6-proxmox!!
+      enabled: true
+    - domain: ts.stevijo.me
+      answer: '::'
+      enabled: true
+    - domain: vyos.stevijo.me
+      answer: 0.0.0.0
+      enabled: true
+    - domain: vyos.stevijo.me
+      answer: !!ipv6-eth1-2!!
+      enabled: true
+    - domain: faster.stevijo.me
+      answer: A
+      enabled: true
+    - domain: faster.stevijo.me
+      answer: AAAA
+      enabled: true
+    - domain: remote.stevijo.me
+      answer: AAAA
+      enabled: true
+    - domain: geo.hivebedrock.network
+      answer: 134.255.231.119
+      enabled: true
+    - domain: hivebedrock.network
+      answer: 134.255.231.119
+      enabled: true
+    - domain: s3.stevijo.me
+      answer: A
+      enabled: true
+    - domain: s3.stevijo.me
+      answer: AAAA
+      enabled: true
+    - domain: api.s3.stevijo.me
+      answer: AAAA
+      enabled: true
+    - domain: api.s3.stevijo.me
+      answer: A
+      enabled: true
+    - domain: glances.stevijo.me
+      answer: A
+      enabled: true
+    - domain: glances.stevijo.me
+      answer: AAAA
+      enabled: true
+    - domain: dynamic.stevijo.me
+      answer: A
+      enabled: true
+    - domain: dynamic-2.stevijo.me
+      answer: A
+      enabled: true
+    - domain: dynamic.stevijo.me
+      answer: AAAA
+      enabled: true
+    - domain: dynamic-2.stevijo.me
+      answer: AAAA
+      enabled: true
+    - domain: normal.stevijo.me
+      answer: A
+      enabled: true
+    - domain: normal.stevijo.me
+      answer: AAAA
+      enabled: true
+    - domain: openclaw.stevijo.me
+      answer: !!ipv6-proxmox!!
+      enabled: true
+    - domain: openclaw.stevijo.me
+      answer: 192.168.178.10
+      enabled: true
+    - domain: speedtest.stevijo.me
+      answer: A
+      enabled: true
+    - domain: speedtest.stevijo.me
+      answer: AAAA
+      enabled: true
+    - domain: '*.normal.stevijo.me'
+      answer: AAAA
+      enabled: true
+    - domain: '*.normal.stevijo.me'
+      answer: A
+      enabled: true
+    - domain: '*.guest.stevijo.me'
+      answer: A
+      enabled: true
+    - domain: '*.guest.stevijo.me'
+      answer: AAAA
+      enabled: true
+    - domain: '*.smart.stevijo.me'
+      answer: AAAA
+      enabled: true
+    - domain: '*.smart.stevijo.me'
+      answer: A
+      enabled: true
+    - domain: cloudflare-dns.com
+      answer: 1.1.1.1
+      enabled: true
+    - domain: cloudflare-dns.com
+      answer: 1.0.0.1
+      enabled: true
+    - domain: cloudflare-dns.com
+      answer: '::'
+      enabled: true
+    - domain: dns.quad9.net
+      answer: 9.9.9.9
+      enabled: true
+    - domain: dns.quad9.net
+      answer: 149.112.112.112
+      enabled: true
+    - domain: dns.quad9.net
+      answer: '::'
+      enabled: true
+  safe_fs_patterns:
+    - /opt/adguardhome/work/data/userfilters/*
+  safebrowsing_cache_size: 1048576
+  safesearch_cache_size: 1048576
+  parental_cache_size: 1048576
+  cache_time: 30
+  filters_update_interval: 1
+  blocked_response_ttl: 10
+  filtering_enabled: true
+  rewrites_enabled: true
+  parental_enabled: false
+  safebrowsing_enabled: false
+  protection_enabled: true
+clients:
+  runtime_sources:
+    whois: true
+    arp: true
+    rdns: true
+    dhcp: true
+    hosts: true
+  persistent: []
+log:
+  enabled: true
+  file: ""
+  max_backups: 0
+  max_size: 100
+  max_age: 3
+  compress: false
+  local_time: false
+  verbose: false
+os:
+  group: ""
+  user: ""
+  rlimit_nofile: 0
+schema_version: 34

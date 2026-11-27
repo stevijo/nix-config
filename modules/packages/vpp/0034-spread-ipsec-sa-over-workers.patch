@@ -1,0 +1,120 @@
+Subject: [PATCH] ipsec: spread the SAs over the workers
+
+The traffic of an IPsec SA is decrypted by a single worker, because the
+window of the replays and the sequence numbers belong to the SA. The worker
+is the one which received the first packet of the SA, so all the traffic of
+a peer stays on that worker, whichever queue of the card it arrives on.
+
+Choose the worker by the index of the SA instead, so that the SAs of a peer
+are spread over the workers. The packets of an SA which arrive on another
+worker are handed off to its worker, which is what the handoff of the
+decrypt node does.
+
+The command "set ipsec sa spread on" turns it on.
+
+--- a/vnet/ipsec/ipsec_sa.h
++++ b/vnet/ipsec/ipsec_sa.h
+@@ -744,6 +744,21 @@
+ 	  : (unix_time_now_nsec () % vlib_num_workers ()) + 1);
+ }
+ 
++/**
++ * @brief The worker which decrypts the traffic of an SA
++ *
++ * The traffic of an SA is decrypted by a single worker, because the window
++ * of the replays and the sequence numbers belong to the SA. The worker is
++ * chosen by the index of the SA, so that the SAs of a peer are spread over
++ * the workers and the traffic of the peer does not stay on the worker which
++ * received it.
++ */
++static_always_inline u16
++ipsec_sa_decrypt_thread (u32 sa_index)
++{
++  return (sa_index % vlib_num_workers ()) + 1;
++}
++
+ #endif /* __IPSEC_SPD_SA_H__ */
+ 
+ /*
+--- a/vnet/ipsec/ipsec.h
++++ b/vnet/ipsec/ipsec.h
+@@ -251,6 +251,10 @@
+   u32 esp4_dec_tun_fq_index;
+   u32 esp6_dec_tun_fq_index;
+ 
++  /* Spread the SAs over the workers by their index, so that the traffic of
++     a peer which has several SAs is decrypted by several workers. */
++  u8 dec_sa_thread_enabled;
++
+   u32 handoff_queue_size;
+ 
+   /* Number of buckets for flow cache */
+--- a/vnet/ipsec/esp_decrypt.c
++++ b/vnet/ipsec/esp_decrypt.c
+@@ -1157,8 +1157,11 @@
+ 	  /* this is the first packet to use this SA, claim the SA
+ 	   * for this thread. this could happen simultaneously on
+ 	   * another thread */
+-	  clib_atomic_cmp_and_swap (&irt->thread_index, ~0,
+-				    ipsec_sa_assign_thread (thread_index));
++	  clib_atomic_cmp_and_swap (
++	    &irt->thread_index, ~0,
++	    im->dec_sa_thread_enabled
++	      ? ipsec_sa_decrypt_thread (current_sa_index)
++	      : ipsec_sa_assign_thread (thread_index));
+ 	}
+ 
+       if (PREDICT_FALSE (thread_index != irt->thread_index))
+--- a/vnet/ipsec/ah_decrypt.c
++++ b/vnet/ipsec/ah_decrypt.c
+@@ -161,8 +161,11 @@
+ 	  /* this is the first packet to use this SA, claim the SA
+ 	   * for this thread. this could happen simultaneously on
+ 	   * another thread */
+-	  clib_atomic_cmp_and_swap (&irt->thread_index, ~0,
+-				    ipsec_sa_assign_thread (thread_index));
++	  clib_atomic_cmp_and_swap (
++	    &irt->thread_index, ~0,
++	    im->dec_sa_thread_enabled
++	      ? ipsec_sa_decrypt_thread (current_sa_index)
++	      : ipsec_sa_assign_thread (thread_index));
+ 	}
+ 
+       if (PREDICT_TRUE (thread_index != irt->thread_index))
+--- a/vnet/ipsec/ipsec_cli.c
++++ b/vnet/ipsec/ipsec_cli.c
+@@ -986,6 +986,34 @@
+   return (NULL);
+ }
+ 
++static clib_error_t *
++set_sa_spread_command_fn (vlib_main_t *vm, unformat_input_t *input,
++			  vlib_cli_command_t *cmd)
++{
++  int enable = 0;
++
++  while (unformat_check_input (input) != UNFORMAT_END_OF_INPUT)
++    {
++      if (unformat (input, "on"))
++	enable = 1;
++      else if (unformat (input, "off"))
++	enable = 0;
++      else
++	return clib_error_return (0, "unknown input '%U'",
++				   format_unformat_error, input);
++    }
++
++  ipsec_main.dec_sa_thread_enabled = enable;
++
++  return 0;
++}
++
++VLIB_CLI_COMMAND (set_sa_spread_command, static) = {
++  .path = "set ipsec sa spread",
++  .function = set_sa_spread_command_fn,
++  .short_help = "set ipsec sa spread on|off",
++};
++
+ VLIB_CLI_COMMAND (set_async_mode_command, static) = {
+     .path = "set ipsec async mode",
+     .short_help = "set ipsec async mode on|off",

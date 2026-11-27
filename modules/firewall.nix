@@ -23,7 +23,7 @@
 # The rules of the two address families are kept apart, because the rules of
 # one family do not apply to the other: an address group of the IPv4 rules
 # has no counterpart in the IPv6 rules.
-{ config, lib, ... }:
+{ ... }:
 
 {
   nixos.modules.firewall = { config, lib, ... }:

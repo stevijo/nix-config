@@ -1,16 +1,7 @@
-# The firewall of the faster-router: the filter, the nat and the mangle
-# tables of the VyOS configuration.
-#
-# The mangle table carries the policy routing: the packets of the home
-# tunnels are marked, and the mark selects the route table they are sent
-# through.
-{ config, ... }:
+{ ... }:
 
 {
   nixos.configurations.vyos.module = { config, ... }: {
-    # The ruleset holds the placeholders of the secrets, which are not
-    # valid nftables, so it cannot be checked when it is built. It is
-    # checked when it is loaded, after the transformation.
     networking.nftables.checkRuleset = false;
 
     firewall.groups = {
@@ -22,8 +13,7 @@
         home = [
           "wg0"
           "eth5"
-          "vppgre0"
-        ];
+        ] ++ map (tunnel: "vppgre${toString tunnel.index}") config.tunnel.tunnels;
       };
 
       network = {
@@ -136,16 +126,10 @@
         prerouting = {
           defaultAction = "accept";
           priority = "raw";
-          rules = [
-            {
-              action = "";
-              counter = false;
-              raw = ''
-                udp dport 3784 iifname "vppgre0" ip ttl < 255 ip ttl set 255 continue
-              '';
-              comment = "Keep the TTL of the BFD packets of the tunnel";
-            }
-          ];
+
+          # The rules which are about the tunnels of GRE are in `tunnels.nix`,
+          # with the tunnels they are about.
+          rules = [ ];
         };
       };
 
@@ -253,12 +237,6 @@
               inbound = "eth2";
               protocol = "tcp";
             }
-            {
-              action = "dnat to 10.32.32.5";
-              comment = "The IPsec tunnel";
-              counter = false;
-              raw = "iifname \"eth1\" ip saddr != ${config.sops.placeholder."peer-range"} udp dport { 500, 4500 }";
-            }
           ];
         };
 
@@ -308,19 +286,15 @@
               action = "jump faster";
               comment = "The packets of the home tunnels";
               inbound = [
-                "wg0"
-                "eth5"
-                "vppgre0"
+                "home"
               ];
             }
             {
               action = "jump inet_forward";
               comment = "The packets which are forwarded";
               inbound = [
-                "wg0"
+                "home"
                 "eth0"
-                "eth5"
-                "vppgre0"
               ];
             }
             {

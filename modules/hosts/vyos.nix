@@ -10,21 +10,28 @@
 { config, ... }:
 
 let
-  inherit (config.nixos.modules) base firewall sops vpp;
+  inherit (config.nixos.modules) base firewall sops tunnel vpp;
 in
 {
   config = {
     nixos.configurations.vyos = {
       sshTarget = "stevijo@vyos:2222";
 
-      module = { config, ... }: {
+      module = { config, lib, ... }: {
         imports = [
           base
           firewall
           sops
+          tunnel
           vpp
           ./vyos/_hardware-configuration.nix
         ];
+
+        # The processor of the packets tells systemd when it is ready, so the
+        # unit of it waits for the notification of it: the network of systemd
+        # starts after the processor of the packets has taken the card of the
+        # provider from the kernel.
+        systemd.services.vpp.serviceConfig.Type = lib.mkForce "notify";
       };
     };
   };

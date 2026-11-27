@@ -1,13 +1,10 @@
 keys:
   - &router age19w5s8jcfzyxdt262vthc49unslhes86wfyz783qv84wnjaslfa4sdsfxes
-  - &home-router age1hur9z8gfsj46n5tzdwlj4tgurjsdhh6pj6vtm2uf24q4gsf04agq3mmkh4
   - &laptop age15nmfn24htt4qwk79khts8d7yv0zyntcjpzkss8pcej79ga8ttf5qwnts5u
   - &yubikey ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAAGXGRGgDfeluY1/CjIz0Q745fexf8d/tDLCZ9SwHwZ 
   - &ally age10juu4c5k9cpak77l5lh7h42pava3c6rzcfx3nhw8j28kwap55psscz6gc9
-  - &lab-nixos age1qhuqn95zrp8rwgcp7lye22wj6vnzwf7z4d7auxdy5vmdqru6gflsl93j5q
-  # The key of the new faster-router, which is the one of the machine of
-  # the remote Proxmox.
-  - &lab-vyos ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKKBAu35snjJXDBmPAFqRpTZdZy96gcueM2wFm+fjSyj
+  - &vyos age1qhuqn95zrp8rwgcp7lye22wj6vnzwf7z4d7auxdy5vmdqru6gflsl93j5q
+  - &bigbox age1cz6296f4u5mg7aer40p46cpw903am67jcz5p86kl4pa2kfa6nd4qp6ka3u
 creation_rules:
   # The rule matches the whole path of the file, so it starts with the
   # wildcard.
@@ -15,9 +12,8 @@ creation_rules:
     key_groups:
       - age:
           - *router
-          - *home-router
           - *yubikey
           - *laptop
           - *ally
-          - *lab-nixos
-          - *lab-vyos
+          - *vyos
+          - *bigbox

@@ -1,2 +1,5 @@
 result
 .direnv
+
+# The worktrees of the branches.
+.worktrees/
