@@ -237,6 +237,12 @@
               inbound = "eth2";
               protocol = "tcp";
             }
+            {
+              action = "dnat to 10.32.32.5";
+              comment = "The IPsec tunnel";
+              counter = false;
+              raw = "iifname \"eth1\" ip saddr != ${config.sops.placeholder."peer-range"} udp dport { 500, 4500 }";
+            }
           ];
         };
 
