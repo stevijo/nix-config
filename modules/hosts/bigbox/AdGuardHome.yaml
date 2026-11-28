@@ -321,6 +321,9 @@ filtering:
     - domain: dns.quad9.net
       answer: '::'
       enabled: true
+    - domain: '*.srv.nintendo.net'
+      answer: '192.168.178.10'
+      enabled: true
   safe_fs_patterns:
     - /opt/adguardhome/work/data/userfilters/*
   safebrowsing_cache_size: 1048576
