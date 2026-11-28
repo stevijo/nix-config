@@ -131,7 +131,7 @@
               source = "inet";
             }
             {
-              action = "drop";
+              action = "reject";
               comment = "Drop the machine which does not belong here";
               source = "40:44:F7:FD:DB:83";
             }
@@ -297,7 +297,7 @@
               source = "inet";
             }
             {
-              action = "drop";
+              action = "reject";
               comment = "Drop the machine which does not belong here";
               source = "40:44:F7:FD:DB:83";
             }
